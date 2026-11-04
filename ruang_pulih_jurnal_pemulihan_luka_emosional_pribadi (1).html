@@ -1,0 +1,2299 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruang Pulih – Jurnal Pemulihan Luka Emosional Pribadi</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        lavender: { 50: '#f8f5ff', 100: '#f0e6ff', 200: '#e1cdfe', 300: '#cdabfd', 400: '#b47cfb', 500: '#9b4efa', 600: '#8328ed', 700: '#6f19d2', 800: '#5c17ab', 900: '#4c1589' },
+                        cream: { 50: '#fffdfa', 100: '#fffaf0', 200: '#fff3dc', 300: '#ffe8be', 400: '#ffd899' },
+                        peach: { 50: '#fff8f6', 100: '#ffeee9', 200: '#ffd6cb', 300: '#ffb5a3', 400: '#ff8970' },
+                        sage: { 50: '#f4f7f4', 100: '#e4ebe4', 200: '#cad9ca', 300: '#a8c1a9', 400: '#81a483', 500: '#618663' }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Chart.js & html2pdf & SheetJS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
+    </style>
+</head>
+<body class="bg-[#FAF8F5] dark:bg-slate-900 text-slate-700 dark:text-slate-200 min-h-screen transition-colors duration-300">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- ---------------- SCREEN 1: LAYAR LOGIN / REGISTRASI ---------------- -->
+    <div id="auth-screen" class="fixed inset-0 z-50 bg-[#FAF8F5] dark:bg-slate-900 flex items-center justify-center p-4 transition-all duration-300">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200/70 dark:border-slate-700 space-y-6">
+            
+            <!-- Logo & Brand Header -->
+            <div class="text-center space-y-2">
+                <div class="relative w-16 h-16 mx-auto rounded-3xl bg-gradient-to-tr from-lavender-400 to-peach-300 flex items-center justify-center text-white shadow-lg shadow-lavender-200 dark:shadow-none">
+                    <i class="bi bi-heart-fill text-3xl"></i>
+                    <span class="absolute rotate-45 w-8 h-2 bg-peach-200 rounded-sm border border-white/50 opacity-90 shadow-sm"></span>
+                </div>
+                <h1 class="text-2xl font-bold text-slate-800 dark:text-white pt-2">Ruang Pulih</h1>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Tempatku bercerita, memahami diri, dan bertumbuh</p>
+            </div>
+
+            <!-- Lock Info Banner -->
+            <div class="p-3.5 rounded-2xl bg-lavender-50 dark:bg-slate-700/50 border border-lavender-100 dark:border-slate-600 text-center text-xs text-lavender-700 dark:text-lavender-300">
+                <i class="bi bi-shield-lock-fill mr-1"></i> Ruang aman pribadi. Masukkan PIN / Kata Sandi milikmu.
+            </div>
+
+            <!-- Form LOGIN Utama -->
+            <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nama Pengguna</label>
+                    <input type="text" id="login-username" required placeholder="Masukkan nama..." class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-lavender-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">PIN / Kata Sandi (Minimum 4 Angka)</label>
+                    <input type="password" id="login-pin" required placeholder="••••" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-lavender-400">
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl bg-lavender-600 hover:bg-lavender-700 text-white font-bold text-xs shadow-md shadow-lavender-300 dark:shadow-none transition flex items-center justify-center gap-2">
+                    <i class="bi bi-door-open-fill"></i> Buka Ruang Pulih
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- App Container (Hidden initially until Login) -->
+    <div id="app-screen" class="hidden flex flex-col md:flex-row min-h-screen">
+
+        <!-- Sidebar / Navigation Desktop -->
+        <aside class="hidden md:flex flex-col w-64 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-r border-slate-200/60 dark:border-slate-700/60 p-5 sticky top-0 h-screen justify-between z-20">
+            <div>
+                <!-- App Logo with Plaster Detail -->
+                <div class="flex items-center gap-3 px-2 py-3 mb-6">
+                    <div class="relative w-10 h-10 rounded-2xl bg-gradient-to-tr from-lavender-400 to-peach-300 flex items-center justify-center text-white shadow-md shadow-lavender-200 dark:shadow-none">
+                        <i class="bi bi-heart-fill text-xl"></i>
+                        <span class="absolute rotate-45 w-5 h-1.5 bg-peach-200 rounded-sm border border-white/50 opacity-90 shadow-sm"></span>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg text-slate-800 dark:text-white leading-tight">Ruang Pulih</h1>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400">Jurnal Pemulihan Emosional</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="space-y-1">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all bg-lavender-100 text-lavender-700 dark:bg-lavender-900/40 dark:text-lavender-300 font-semibold">
+                        <i class="bi bi-grid-1x2-fill text-lg"></i> Beranda
+                    </button>
+                    <button onclick="switchTab('wounds')" id="nav-wounds" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50">
+                        <i class="bi bi-journal-bookmark-fill text-lg"></i> Daftar Luka
+                    </button>
+                    <button onclick="switchTab('history')" id="nav-history" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50">
+                        <i class="bi bi-clock-history text-lg"></i> Riwayat Jurnal
+                    </button>
+                    <button onclick="switchTab('analytics')" id="nav-analytics" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50">
+                        <i class="bi bi-graph-up-arrow text-lg"></i> Analitik & Grafik
+                    </button>
+                    <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50">
+                        <i class="bi bi-gear-fill text-lg"></i> Pengaturan Data
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Profile & Dark Mode Toggle -->
+            <div class="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-700">
+                <button onclick="toggleDarkMode()" class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700/60 hover:bg-slate-200 transition">
+                    <span class="flex items-center gap-2"><i class="bi bi-moon-stars-fill"></i> Mode Gelap</span>
+                    <div class="w-8 h-4 bg-slate-300 dark:bg-lavender-500 rounded-full relative p-0.5 transition">
+                        <div class="w-3 h-3 bg-white rounded-full transition-transform dark:translate-x-4"></div>
+                    </div>
+                </button>
+                
+                <div class="flex items-center justify-between px-3 py-2 rounded-xl bg-sage-50 dark:bg-slate-700/30 border border-sage-100 dark:border-slate-700">
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <div id="user-avatar" class="w-8 h-8 rounded-full bg-sage-300 text-sage-800 font-bold flex items-center justify-center text-xs shrink-0">
+                            RP
+                        </div>
+                        <div class="overflow-hidden">
+                            <p id="user-display-name" class="text-xs font-bold text-slate-800 dark:text-white truncate">Pengguna</p>
+                            <p class="text-[10px] text-slate-500 truncate">Penyimpanan Terkunci</p>
+                        </div>
+                    </div>
+                    <button onclick="logout()" class="text-slate-400 hover:text-red-500 p-1.5 rounded-lg" title="Keluar / Kunci Ruang">
+                        <i class="bi bi-box-arrow-right text-base"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 pb-24 md:pb-8 p-4 md:p-8 max-w-7xl mx-auto w-full overflow-x-hidden">
+            
+            <!-- Header Mobile -->
+            <header class="flex md:hidden items-center justify-between mb-6 pb-3 border-b border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-2.5">
+                    <div class="relative w-9 h-9 rounded-xl bg-gradient-to-tr from-lavender-400 to-peach-300 flex items-center justify-center text-white shadow-sm">
+                        <i class="bi bi-heart-fill"></i>
+                        <span class="absolute rotate-45 w-4 h-1 bg-peach-200 rounded-sm border border-white/50 opacity-90"></span>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-base text-slate-800 dark:text-white leading-tight">Ruang Pulih</h1>
+                        <p class="text-[9px] text-slate-500">Tempatku bercerita, memahami diri, dan bertumbuh</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleDarkMode()" class="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                        <i class="bi bi-moon-stars text-base"></i>
+                    </button>
+                    <button onclick="logout()" class="p-2 rounded-full bg-red-50 text-red-500 dark:bg-slate-800" title="Keluar">
+                        <i class="bi bi-box-arrow-right text-base"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Banner Pendamping / Affirmation -->
+            <div class="mb-6 p-4 rounded-2xl bg-gradient-to-r from-lavender-50 via-peach-50 to-sage-50 dark:from-slate-800 dark:via-slate-800 dark:to-slate-800 border border-lavender-100/60 dark:border-slate-700 flex items-center gap-3">
+                <div class="text-lavender-500 text-xl"><i class="bi bi-quote"></i></div>
+                <p id="random-affirmation" class="text-xs md:text-sm font-medium text-slate-600 dark:text-slate-300 italic">
+                    "Aku berhak untuk merasa, memahami, dan memulihkan diri."
+                </p>
+            </div>
+
+            <!-- ---------------- Tab 1: DASHBOARD ---------------- -->
+            <section id="tab-dashboard" class="tab-content space-y-6">
+                <!-- Welcome Card -->
+                <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-lavender-200/50 via-peach-100/40 to-sage-100/40 dark:from-slate-800 dark:to-slate-800/80 p-6 md:p-8 border border-white/60 dark:border-slate-700/60 shadow-sm">
+                    <div class="relative z-10 space-y-3">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-slate-700 text-lavender-700 dark:text-lavender-300 backdrop-blur-sm">
+                            <i class="bi bi-calendar3"></i> <span id="current-date-text">Rabu, 4 November 2026</span>
+                        </span>
+                        <h2 class="text-2xl md:text-3xl font-bold text-slate-800 dark:text-white">
+                            Selamat datang kembali.
+                        </h2>
+                        <p class="text-xs md:text-sm text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
+                            "Tempatku bercerita, memahami diri, dan bertumbuh." Nikmati proses tanpa paksaan untuk memaafkan, mengikhlaskan, atau melupakan.
+                        </p>
+                        <div class="pt-2 flex flex-wrap gap-3">
+                            <button onclick="startNewJournal()" class="px-5 py-3 rounded-xl bg-lavender-600 hover:bg-lavender-700 text-white font-semibold text-sm shadow-md shadow-lavender-300 dark:shadow-none transition flex items-center gap-2">
+                                <i class="bi bi-pencil-square"></i> Mulai Menulis Jurnal Baru
+                            </button>
+                            <button onclick="switchTab('wounds')" class="px-5 py-3 rounded-xl bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 font-medium text-sm hover:bg-slate-50 transition flex items-center gap-2">
+                                <i class="bi bi-folder-plus"></i> Kelola Daftar Luka
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Check-in Perasaan Quick Widget -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/70 dark:border-slate-700 shadow-sm">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="text-base font-bold text-slate-800 dark:text-white">Bagaimana Perasaanmu Hari Ini?</h3>
+                        <span id="checkin-save-status" class="text-[11px] font-medium text-lavender-600 hidden"><i class="bi bi-check-circle"></i> Tersimpan hari ini</span>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Pilih emosi yang menggambarkan kondisimu saat ini (Bisa lebih dari 1).</p>
+                    
+                    <div class="grid grid-cols-4 sm:grid-cols-8 gap-3" id="dashboard-mood-picker">
+                        <!-- Dynamic Check-in Emojis -->
+                    </div>
+
+                    <!-- Daily Release Mood Diary Banner -->
+                    <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-gradient-to-r from-peach-50 to-lavender-50 dark:from-slate-700/60 dark:to-slate-700/40 p-4 rounded-2xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-peach-300 text-peach-900 flex items-center justify-center font-bold text-lg shadow-sm shrink-0">
+                                🌤️
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-xs text-slate-800 dark:text-white">Diari Harian — Release Mood</h4>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-300">Luapkan isi pikiran, energi hari ini, kebutuhan, dan harapan penutup hari.</p>
+                            </div>
+                        </div>
+                        <button onclick="openDailyDiaryModal()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-peach-400 hover:bg-peach-500 text-slate-900 font-bold text-xs shadow-sm transition flex items-center justify-center gap-1.5 shrink-0">
+                            <i class="bi bi-journal-text"></i> Isi Diari Harian
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Overview Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/70 dark:border-slate-700 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-lavender-100 dark:bg-slate-700 text-lavender-600 dark:text-lavender-300 flex items-center justify-center text-xl">
+                            <i class="bi bi-book-half"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Total Jurnal Dibuat</p>
+                            <h4 id="stat-total-journals" class="text-2xl font-bold text-slate-800 dark:text-white">0</h4>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/70 dark:border-slate-700 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-peach-100 dark:bg-slate-700 text-peach-500 flex items-center justify-center text-xl">
+                            <i class="bi bi-heartbreak-fill"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Luka Diproses</p>
+                            <h4 id="stat-total-wounds" class="text-2xl font-bold text-slate-800 dark:text-white">0</h4>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/70 dark:border-slate-700 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-sage-100 dark:bg-slate-700 text-sage-600 flex items-center justify-center text-xl">
+                            <i class="bi bi-emoji-smile-fill"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Rata-rata Reduksi Sakit</p>
+                            <h4 id="stat-pain-diff" class="text-2xl font-bold text-slate-800 dark:text-white">- 0.0 Poin</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Calendar & Recent Journals -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Monthly Activity Calendar Widget -->
+                    <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/70 dark:border-slate-700 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-800 dark:text-white text-base">Kalender Aktivitas Journaling</h3>
+                            <div class="flex items-center gap-2">
+                                <button onclick="changeCalendarMonth(-1)" class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200"><i class="bi bi-chevron-left"></i></button>
+                                <span id="calendar-month-title" class="text-xs font-bold text-slate-700 dark:text-slate-200">November 2026</span>
+                                <button onclick="changeCalendarMonth(1)" class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200"><i class="bi bi-chevron-right"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400 mb-2">
+                            <div>MIN</div><div>SEN</div><div>SEL</div><div>RAB</div><div>KAM</div><div>JUM</div><div>SAB</div>
+                        </div>
+                        <div id="calendar-grid" class="grid grid-cols-7 gap-1.5">
+                            <!-- Dynamic Calendar Days -->
+                        </div>
+                        <div class="flex items-center justify-end gap-3 text-[10px] text-slate-400 pt-2 border-t border-slate-100 dark:border-slate-700">
+                            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-slate-100 dark:bg-slate-700 border border-slate-300"></span> Belum ada</span>
+                            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-lavender-500"></span> Ada Jurnal</span>
+                        </div>
+                    </div>
+
+                    <!-- Recent Journals & Mini Chart -->
+                    <div class="space-y-6">
+                        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/70 dark:border-slate-700 shadow-sm">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="font-bold text-slate-800 dark:text-white text-base">Jurnal Terakhir</h3>
+                                <button onclick="switchTab('history')" class="text-xs font-semibold text-lavender-600 hover:underline">Lihat Semua</button>
+                            </div>
+                            <div id="recent-journals-list" class="space-y-3">
+                                <!-- Dynamic Recent Journals -->
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/70 dark:border-slate-700 shadow-sm">
+                            <h3 class="font-bold text-slate-800 dark:text-white text-base mb-1">Tren Intensitas Rasa Sakit</h3>
+                            <p class="text-xs text-slate-500 mb-3">Sebelum vs Sesudah Menulis (Terakhir)</p>
+                            <div class="h-40">
+                                <canvas id="miniTrendChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ---------------- Tab 2: DAFTAR LUKA ---------------- -->
+            <section id="tab-wounds" class="tab-content space-y-6 hidden">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/70 dark:border-slate-700">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800 dark:text-white">Daftar Luka Emosional</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Satu Luka dapat ditulis dalam beberapa sesi jurnal berulang kali secara konsisten.</p>
+                    </div>
+                    <button onclick="openCreateWoundModal()" class="px-4 py-2.5 rounded-xl bg-lavender-600 hover:bg-lavender-700 text-white font-medium text-xs shadow-sm transition flex items-center gap-2">
+                        <i class="bi bi-plus-lg"></i> Tambah Luka Baru
+                    </button>
+                </div>
+
+                <div id="wounds-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <!-- Dynamic Wound Cards -->
+                </div>
+            </section>
+
+            <!-- ---------------- Tab 3: RIWAYAT JURNAL ---------------- -->
+            <section id="tab-history" class="tab-content space-y-6 hidden">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/70 dark:border-slate-700 space-y-4">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800 dark:text-white">Riwayat Pemulihan & Diari</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Temukan kembali refleksi luka emosional dan catatan diari harianmu.</p>
+                        </div>
+                        <!-- Toggle Sub-Tab Riwayat -->
+                        <div class="flex p-1 bg-slate-100 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold">
+                            <button onclick="switchHistorySubTab('journal')" id="btn-subtab-journal" class="px-4 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-white shadow-sm">
+                                <i class="bi bi-journal-text mr-1"></i> Jurnal Luka
+                            </button>
+                            <button onclick="switchHistorySubTab('daily')" id="btn-subtab-daily" class="px-4 py-1.5 rounded-lg text-slate-500 hover:text-slate-800 dark:hover:text-white">
+                                <i class="bi bi-cloud-sun-fill mr-1"></i> Diari Harian
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filter Controls -->
+                    <div id="history-filter-bar" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 pt-2">
+                        <select id="filter-wound" onchange="applyHistoryFilters()" class="px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300">
+                            <option value="ALL">Semua Luka</option>
+                        </select>
+                        <select id="filter-status" onchange="applyHistoryFilters()" class="px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300">
+                            <option value="ALL">Semua Status Pemrosesan</option>
+                            <option value="Belum mulai">Belum mulai</option>
+                            <option value="Sedang diproses">Sedang diproses</option>
+                            <option value="Perlu waktu">Perlu waktu</option>
+                            <option value="Sudah lebih dipahami">Sudah lebih dipahami</option>
+                            <option value="Masih membutuhkan perhatian">Masih membutuhkan perhatian</option>
+                        </select>
+                        <select id="filter-time" onchange="toggleCustomDateFilter(this.value); applyHistoryFilters();" class="px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300">
+                            <option value="ALL">Semua Waktu</option>
+                            <option value="today">Hari Ini</option>
+                            <option value="week">Minggu Ini</option>
+                            <option value="month">Bulan Ini</option>
+                            <option value="custom">Rentang Tanggal Khusus</option>
+                        </select>
+                        <input type="text" id="filter-search" oninput="applyHistoryFilters()" placeholder="Cari kata kunci..." class="px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300">
+                        <div id="custom-date-container" class="hidden sm:col-span-2 md:col-span-1 flex gap-2">
+                            <input type="date" id="filter-start-date" onchange="applyHistoryFilters()" class="w-1/2 px-2 py-2 rounded-xl text-[11px] border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300">
+                            <input type="date" id="filter-end-date" onchange="applyHistoryFilters()" class="w-1/2 px-2 py-2 rounded-xl text-[11px] border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Container Jurnal Utama -->
+                <div id="history-journals-list" class="space-y-4">
+                    <!-- Dynamic Journal History List -->
+                </div>
+
+                <!-- Container Diari Harian (Release Mood) -->
+                <div id="history-daily-list" class="space-y-4 hidden">
+                    <!-- Dynamic Daily History List -->
+                </div>
+            </section>
+
+            <!-- ---------------- Tab 4: ANALITIK & GRAFIK ---------------- -->
+            <section id="tab-analytics" class="tab-content space-y-6 hidden">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/70 dark:border-slate-700">
+                    <h2 class="text-xl font-bold text-slate-800 dark:text-white">Analitik & Grafik Pemulihan</h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                        Visualisasi jujur dari perkembangan intensitas rasa dan persebaran emosi. Tidak ada diagnosa atau kesimpulan psikologis otomatis di sini.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Chart 1: Before vs After Pain -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/70 dark:border-slate-700 shadow-sm">
+                        <h3 class="font-bold text-slate-800 dark:text-white text-sm mb-4">Rata-rata Rasa Sakit Sebelum vs Sesudah Sesi</h3>
+                        <div class="h-64">
+                            <canvas id="analyticsCompareChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart 2: Mood Distribution -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/70 dark:border-slate-700 shadow-sm">
+                        <h3 class="font-bold text-slate-800 dark:text-white text-sm mb-4">Distribusi Emosi Yang Dominan</h3>
+                        <div class="h-64 flex justify-center">
+                            <canvas id="analyticsMoodChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart 3: Timeline Progress -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/70 dark:border-slate-700 shadow-sm">
+                    <h3 class="font-bold text-slate-800 dark:text-white text-sm mb-4">Perubahan Rasa Sakit Dari Waktu ke Waktu</h3>
+                    <div class="h-72">
+                        <canvas id="analyticsTimelineChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ---------------- Tab 5: PENGATURAN DATA ---------------- -->
+            <section id="tab-settings" class="tab-content space-y-6 hidden">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/70 dark:border-slate-700">
+                    <h2 class="text-xl font-bold text-slate-800 dark:text-white">Pengaturan & Keamanan Data</h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                        Seluruh isi jurnal disimpan 100% secara lokal di peramban (browser) perangkat ini. Data kamu privasi sepenuhnya.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Backup & Export -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/70 dark:border-slate-700 space-y-4">
+                        <h3 class="font-bold text-slate-800 dark:text-white text-sm flex items-center gap-2">
+                            <i class="bi bi-download text-lavender-500"></i> Ekspor & Cadangkan Data
+                        </h3>
+                        <p class="text-xs text-slate-500">Simpan salinan cadangan atau ekspor ke format dokumen pilihanmu.</p>
+
+                        <div class="space-y-2 pt-2">
+                            <button onclick="exportToJSON()" class="w-full text-left px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs font-semibold text-slate-700 dark:text-slate-200 flex justify-between items-center">
+                                <span><i class="bi bi-filetype-json mr-2 text-base text-lavender-500"></i> Unduh File Backup (JSON)</span>
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+                            <button onclick="exportToExcel()" class="w-full text-left px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs font-semibold text-slate-700 dark:text-slate-200 flex justify-between items-center">
+                                <span><i class="bi bi-file-earmark-excel mr-2 text-base text-sage-500"></i> Ekspor Semua Jurnal (Excel / XLSX)</span>
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Import & Reset -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/70 dark:border-slate-700 space-y-4">
+                        <h3 class="font-bold text-slate-800 dark:text-white text-sm flex items-center gap-2">
+                            <i class="bi bi-upload text-peach-500"></i> Impor Data & Pembersihan
+                        </h3>
+                        <p class="text-xs text-slate-500">Pulihkan jurnal dari cadangan atau bersihkan penyimpanan.</p>
+
+                        <div class="space-y-3 pt-2">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">Pulihkan Dari JSON:</label>
+                                <input type="file" id="import-json-file" accept=".json" onchange="importFromJSON(event)" class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-lavender-100 file:text-lavender-700 hover:file:bg-lavender-200 dark:file:bg-slate-700 dark:file:text-slate-300">
+                            </div>
+
+                            <div class="pt-4 border-t border-slate-100 dark:border-slate-700">
+                                <button onclick="confirmClearAllData()" class="w-full px-4 py-2.5 rounded-xl bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 border border-red-200 dark:border-red-900/50 text-xs font-semibold flex items-center justify-center gap-2">
+                                    <i class="bi bi-trash-fill"></i> Hapus Seluruh Data Jurnal
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Navigation Bottom Bar Mobile -->
+        <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-800/90 backdrop-blur-lg border-t border-slate-200 dark:border-slate-700 flex justify-around p-2 z-30">
+            <button onclick="switchTab('dashboard')" id="mobile-nav-dashboard" class="mobile-nav-btn flex flex-col items-center p-2 text-lavender-600 dark:text-lavender-400">
+                <i class="bi bi-grid-1x2-fill text-lg"></i>
+                <span class="text-[10px] mt-0.5">Beranda</span>
+            </button>
+            <button onclick="switchTab('wounds')" id="mobile-nav-wounds" class="mobile-nav-btn flex flex-col items-center p-2 text-slate-400">
+                <i class="bi bi-journal-bookmark-fill text-lg"></i>
+                <span class="text-[10px] mt-0.5">Luka</span>
+            </button>
+            <button onclick="startNewJournal()" class="flex flex-col items-center justify-center -mt-5">
+                <div class="w-12 h-12 rounded-full bg-lavender-600 text-white flex items-center justify-center shadow-lg shadow-lavender-400">
+                    <i class="bi bi-plus-lg text-xl"></i>
+                </div>
+            </button>
+            <button onclick="switchTab('history')" id="mobile-nav-history" class="mobile-nav-btn flex flex-col items-center p-2 text-slate-400">
+                <i class="bi bi-clock-history text-lg"></i>
+                <span class="text-[10px] mt-0.5">Riwayat</span>
+            </button>
+            <button onclick="switchTab('analytics')" id="mobile-nav-analytics" class="mobile-nav-btn flex flex-col items-center p-2 text-slate-400">
+                <i class="bi bi-graph-up-arrow text-lg"></i>
+                <span class="text-[10px] mt-0.5">Analitik</span>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- ---------------- MODAL FORM JURNAL BARU (FULLSCREEN / RESPONSIVE) ---------------- -->
+    <div id="journal-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex justify-center items-center overflow-y-auto p-2 sm:p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh]">
+            
+            <!-- Modal Header -->
+            <div class="px-6 py-4 bg-gradient-to-r from-lavender-100 to-peach-100 dark:from-slate-700 dark:to-slate-800 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center sticky top-0 z-10">
+                <div>
+                    <h3 class="font-bold text-slate-800 dark:text-white text-sm md:text-base" id="form-section-title">A. Memahami Luka</h3>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400" id="form-progress-text">Bagian 1 dari 6</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="saveDraft()" class="px-3 py-1.5 rounded-xl bg-white/80 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold hover:bg-white shadow-sm border border-slate-200 dark:border-slate-600">
+                        <i class="bi bi-bookmark-fill text-lavender-500"></i> Simpan Draft
+                    </button>
+                    <button onclick="closeJournalModal()" class="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-slate-500">
+                        <i class="bi bi-x-lg text-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+    <!-- ---------------- MODAL DIARI HARIAN — RELEASE MOOD ---------------- -->
+    <div id="daily-diary-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex justify-center items-center overflow-y-auto p-2 sm:p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh]">
+            
+            <!-- Header Modal Diari Harian -->
+            <div class="px-6 py-4 bg-gradient-to-r from-peach-100 to-lavender-100 dark:from-slate-700 dark:to-slate-800 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center sticky top-0 z-10">
+                <div>
+                    <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
+                        🌤️ Diari Harian — Release Mood
+                    </h3>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400" id="daily-diary-date-subtitle">Rabu, 4 November 2026</p>
+                </div>
+                <button onclick="closeDailyDiaryModal()" class="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-slate-500">
+                    <i class="bi bi-x-lg text-lg"></i>
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-6">
+                <!-- Mode Choice: Luapkan vs Solusi -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Niat diari hari ini:</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="daily-intent-selector">
+                        <button type="button" onclick="selectDailyIntent('vent')" id="btn-intent-vent" class="p-3.5 rounded-2xl border border-lavender-200 bg-lavender-50 dark:bg-slate-700 text-left transition ring-2 ring-lavender-500">
+                            <div class="flex items-center gap-2 font-bold text-xs text-lavender-800 dark:text-lavender-200">
+                                <span>💬</span> Aku hanya ingin meluapkan perasaan
+                            </div>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">Tanpa perlu menganalisis atau mencari solusi. Cukup merilis beban hari ini.</p>
+                        </button>
+                        <button type="button" onclick="selectDailyIntent('solve')" id="btn-intent-solve" class="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-left transition opacity-70">
+                            <div class="flex items-center gap-2 font-bold text-xs text-slate-700 dark:text-slate-200">
+                                <span>💡</span> Aku ingin mencari solusi & memahami
+                            </div>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">Mengevaluasi respons, pemicu emosi, dan tindakan yang bisa dilakukan.</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step Tabs Header -->
+                <div class="flex justify-between items-center text-xs border-b border-slate-100 dark:border-slate-700 pb-2 overflow-x-auto gap-2">
+                    <button onclick="switchDailyTab(1)" id="daily-tab-1" class="daily-tab-btn px-4 py-1.5 rounded-full font-bold bg-peach-400 text-slate-900 whitespace-nowrap">1. Mood Tracker</button>
+                    <button onclick="switchDailyTab(2)" id="daily-tab-2" class="daily-tab-btn px-4 py-1.5 rounded-full font-medium text-slate-400 whitespace-nowrap">2. Release Journal</button>
+                    <button onclick="switchDailyTab(3)" id="daily-tab-3" class="daily-tab-btn px-4 py-1.5 rounded-full font-medium text-slate-400 whitespace-nowrap">3. Penutup Hari</button>
+                </div>
+
+                <!-- Form Content Container -->
+                <form id="daily-diary-form" onsubmit="handleSaveDailyDiary(event)" class="space-y-6">
+                    <!-- SECTION 1: Mood Tracker -->
+                    <div id="daily-sec-1" class="daily-sec-content space-y-5">
+                        <div class="p-4 rounded-2xl bg-peach-50 dark:bg-slate-700/50 border border-peach-100 dark:border-slate-600 space-y-4">
+                            <h4 class="font-bold text-xs text-slate-800 dark:text-white uppercase tracking-wider">📅 1. Catatan Hari Ini</h4>
+                            
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Tanggal Hari Ini</label>
+                                <input type="date" id="daily-date-input" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">🌤️ Mood Utama Hari Ini</label>
+                                <div class="grid grid-cols-4 sm:grid-cols-8 gap-2" id="daily-mood-options">
+                                    <!-- Dynamic Mood Buttons -->
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">💗 Seberapa kuat perasaanku? (1–10)</label>
+                                    <span id="val-daily-intensity" class="px-2 py-0.5 rounded-md bg-peach-400 font-bold text-slate-900 text-xs">5 / 10</span>
+                                </div>
+                                <input type="range" min="1" max="10" value="5" id="daily-intensity-range" oninput="document.getElementById('val-daily-intensity').textContent = this.value + ' / 10'" class="w-full accent-peach-500">
+                            </div>
+
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">⚡ Seberapa banyak energi yang kumiliki hari ini? (1–10)</label>
+                                    <span id="val-daily-energy" class="px-2 py-0.5 rounded-md bg-lavender-500 text-white font-bold text-xs">5 / 10</span>
+                                </div>
+                                <input type="range" min="1" max="10" value="5" id="daily-energy-range" oninput="document.getElementById('val-daily-energy').textContent = this.value + ' / 10'" class="w-full accent-lavender-600">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 2: Release Journal -->
+                    <div id="daily-sec-2" class="daily-sec-content space-y-4 hidden">
+                        <div class="p-4 rounded-2xl bg-lavender-50 dark:bg-slate-700/50 border border-lavender-100 dark:border-slate-600 space-y-4">
+                            <h4 class="font-bold text-xs text-slate-800 dark:text-white uppercase tracking-wider">💬 2. Mengeluarkan Isi Pikiran</h4>
+                            
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Apa saja yang terjadi hari ini?</label>
+                                <textarea id="daily-q-events" rows="2" placeholder="Ceritakan alur harimu..." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Kejadian apa yang paling memengaruhi perasaanku?</label>
+                                <textarea id="daily-q-impactful" rows="2" placeholder="Hal spesifik yang paling membekas..." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100"></textarea>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Apa yang kurasakan dan mengapa?</label>
+                                    <textarea id="daily-q-emotions-why" rows="2" placeholder="Sebutkan rasanya dan alasannya..." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Apa yang terus berputar di kepalaku?</label>
+                                    <textarea id="daily-q-looping-thoughts" rows="2" placeholder="Pikiran yang tak kunjung berhenti..." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100"></textarea>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Apa yang membuatku lelah, kesal, sedih, atau tertekan?</label>
+                                <textarea id="daily-q-burdens" rows="2" placeholder="Beban utama hari ini..." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Adakah sesuatu yang ingin kukatakan, tetapi belum bisa kuungkapkan?</label>
+                                <textarea id="daily-q-unsaid" rows="2" placeholder="Kata-kata terpendam yang ingin dikeluarkan..." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 3 (SUB): Memahami & Merawat Diri (Optional based on mode) -->
+                        <div id="daily-sec-reflect" class="p-4 rounded-2xl bg-sage-50 dark:bg-slate-700/50 border border-sage-100 dark:border-slate-600 space-y-3">
+                            <h4 class="font-bold text-xs text-slate-800 dark:text-white uppercase tracking-wider">🌿 Memahami & Merawat Diri</h4>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Apakah ada pemicu luka lama?</label>
+                                    <input type="text" id="daily-q-triggers" placeholder="Pemicu yang muncul..." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Bagaimana aku merespons kejadian hari ini?</label>
+                                    <input type="text" id="daily-q-response" placeholder="Caraku merespons..." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Apa yang tidak bisa kuubah dari kejadian hari ini?</label>
+                                <input type="text" id="daily-q-out-of-control" placeholder="Hal di luar kendaliku..." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 3: Penutup Hari -->
+                    <div id="daily-sec-3" class="daily-sec-content space-y-4 hidden">
+                        <div class="p-4 rounded-2xl bg-cream-100 dark:bg-slate-700/50 border border-cream-300 dark:border-slate-600 space-y-4">
+                            <h4 class="font-bold text-xs text-slate-800 dark:text-white uppercase tracking-wider">🌙 4. Harapan dan Penutup Hari</h4>
+                            
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Apa yang sebenarnya kubutuhkan hari ini?</label>
+                                <input type="text" id="daily-q-needs" placeholder="Kebutuhan emosional / fisik..." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100">
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Adakah hal kecil yang membuat nyaman?</label>
+                                    <input type="text" id="daily-q-comfort" placeholder="Minuman hangat, udara sejuk, dsb..." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Apresiasi diri (hal baik yang sudah dilakukan)</label>
+                                    <input type="text" id="daily-q-appreciation" placeholder="Sudah bertahan sampai malam ini..." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pikiran atau beban apa yang tidak ingin terus kubawa malam ini?</label>
+                                <textarea id="daily-q-leave-behind" rows="2" placeholder="Tinggalkan bebanmu di sini untuk malam ini..." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Apa yang ingin kukatakan kepada diriku sebelum mengakhiri hari?</label>
+                                <textarea id="daily-q-closing-words" rows="2" placeholder="Pesan hangat untuk dirimu sendiri..." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer Action Buttons inside Form -->
+                    <div class="pt-4 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                        <button type="button" onclick="closeDailyDiaryModal()" class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-500 hover:bg-slate-100">Batal</button>
+                        <button type="submit" class="px-6 py-2.5 rounded-xl bg-peach-400 hover:bg-peach-500 text-slate-900 font-bold text-xs shadow-md transition flex items-center gap-1.5">
+                            <i class="bi bi-check-lg"></i> Simpan Release Mood Hari Ini
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ---------------- MODAL TAMBAH/EDIT LUKA ---------------- -->
+    <div id="wound-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex justify-center items-center p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl shadow-2xl p-6 space-y-4">
+            <div class="flex justify-between items-center border-b pb-3 border-slate-100 dark:border-slate-700">
+                <h3 class="font-bold text-slate-800 dark:text-white text-base" id="wound-modal-title">Buat Judul Luka Baru</h3>
+                <button onclick="closeWoundModal()" class="text-slate-400 hover:text-slate-600"><i class="bi bi-x-lg"></i></button>
+            </div>
+            
+            <form id="wound-form" onsubmit="handleWoundSubmit(event)" class="space-y-4">
+                <input type="hidden" id="wound-id-input">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Judul Identitas Luka *</label>
+                    <input type="text" id="wound-title-input" required placeholder="Contoh: Pengkhianatan Teman Masa Kecil" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-lavender-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Deskripsi Singkat / Catatan Awal</label>
+                    <textarea id="wound-desc-input" rows="3" placeholder="Gambarkan gambaran besar luka ini..." class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-lavender-400"></textarea>
+                </div>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeWoundModal()" class="px-4 py-2 rounded-xl text-xs text-slate-500 font-semibold">Batal</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-lavender-600 text-white font-semibold text-xs shadow-sm">Simpan Luka</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ---------------- MODAL DETAIL WOUND (SATU LUKA BANYAK JURNAL) ---------------- -->
+    <div id="wound-detail-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex justify-center items-center p-2 sm:p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="px-6 py-4 bg-gradient-to-r from-peach-100 to-lavender-100 dark:from-slate-700 dark:to-slate-800 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-slate-800 dark:text-white text-base" id="wound-detail-title">Detail Luka Emosional</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400" id="wound-detail-desc"></p>
+                </div>
+                <button onclick="closeWoundDetailModal()" class="p-1.5 text-slate-400 hover:text-slate-600"><i class="bi bi-x-lg"></i></button>
+            </div>
+
+            <div class="p-6 overflow-y-auto custom-scrollbar space-y-6">
+                <!-- Pain Trend for Specific Wound -->
+                <div class="bg-slate-50 dark:bg-slate-700/40 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-700">
+                    <h4 class="font-bold text-slate-800 dark:text-white text-xs mb-2">Perkembangan Rasa Sakit Luka Ini</h4>
+                    <div class="h-40">
+                        <canvas id="woundDetailChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- List of Journals attached to this wound -->
+                <div>
+                    <h4 class="font-bold text-slate-800 dark:text-white text-xs mb-3">Sesi Jurnal Pemulihan Terikat</h4>
+                    <div id="wound-journals-list" class="space-y-3">
+                        <!-- Injected dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ---------------- MODAL DETAIL VIEW JURNAL (PDF READY) ---------------- -->
+    <div id="view-journal-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex justify-center items-center p-2 sm:p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="px-6 py-4 bg-slate-50 dark:bg-slate-700 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-slate-800 dark:text-white text-base">Detail Jurnal Pemulihan</h3>
+                    <p class="text-xs text-slate-500" id="view-modal-date"></p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="downloadJournalPDF()" class="px-3 py-1.5 rounded-xl bg-lavender-100 text-lavender-700 dark:bg-slate-600 dark:text-slate-200 text-xs font-semibold hover:bg-lavender-200">
+                        <i class="bi bi-file-earmark-pdf-fill mr-1"></i> PDF
+                    </button>
+                    <button onclick="closeViewModal()" class="p-1.5 text-slate-400 hover:text-slate-600"><i class="bi bi-x-lg"></i></button>
+                </div>
+            </div>
+
+            <!-- Content Area Exportable to PDF -->
+            <div class="p-6 overflow-y-auto custom-scrollbar space-y-6" id="pdf-export-area">
+                <!-- Rendered View Details -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ---------------- MODAL DETAIL VIEW DIARI HARIAN ---------------- -->
+    <div id="view-daily-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex justify-center items-center p-2 sm:p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="px-6 py-4 bg-gradient-to-r from-peach-100 to-lavender-100 dark:from-slate-700 dark:to-slate-800 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
+                        🌤️ Detail Diari Harian
+                    </h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400" id="view-daily-date"></p>
+                </div>
+                <button onclick="closeViewDailyModal()" class="p-1.5 text-slate-400 hover:text-slate-600"><i class="bi bi-x-lg"></i></button>
+            </div>
+
+            <div class="p-6 overflow-y-auto custom-scrollbar space-y-5" id="view-daily-body">
+                <!-- Dynamic Content Injected -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+    <script>
+        /* ---------------- APP STATE & STORAGE ---------------- */
+        const APP_STORAGE_KEY = 'ruang_pulih_db_v1';
+        const AUTH_USER_KEY = 'ruang_pulih_users_v1';
+        const SESSION_KEY = 'ruang_pulih_session_v1';
+        
+        let currentUser = null;
+        let appData = {
+            wounds: [],
+            journals: [],
+            activeCheckinMoods: []
+        };
+
+        let currentCalendarMonth = new Date().getMonth();
+        let currentCalendarYear = new Date().getFullYear();
+
+        let activeJournalForm = null;
+        let selectedDailyMood = 'Tenang';
+        let dailyIntentMode = 'vent';
+        let currentHistorySubTab = 'journal';
+        let miniTrendChartInst = null;
+        let compareChartInst = null;
+        let moodChartInst = null;
+        let timelineChartInst = null;
+        let woundDetailChartInst = null;
+
+        const EMOTIONS = [
+            { name: 'Senang', emoji: '😊', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+            { name: 'Tenang', emoji: '😌', color: 'bg-sky-50 text-sky-700 border-sky-200' },
+            { name: 'Sedih', emoji: '😔', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
+            { name: 'Lelah', emoji: '😣', color: 'bg-amber-50 text-amber-700 border-amber-200' },
+            { name: 'Kosong', emoji: '😶', color: 'bg-slate-50 text-slate-700 border-slate-200' },
+            { name: 'Cemas', emoji: '😟', color: 'bg-purple-50 text-purple-700 border-purple-200' },
+            { name: 'Marah', emoji: '😡', color: 'bg-rose-50 text-rose-700 border-rose-200' },
+            { name: 'Kecewa', emoji: '🥺', color: 'bg-peach-50 text-peach-700 border-peach-200' }
+        ];
+
+        const AFFIRMATIONS = [
+            "Aku berhak untuk merasa, memahami, dan memulihkan diri.",
+            "Aku tidak harus memaafkan untuk mulai merawat diriku.",
+            "Aku boleh belum siap. Aku hanya sedang belajar memahami diriku.",
+            "Pemulihan bukan perlombaan.",
+            "Langkah kecil hari ini tetap berarti."
+        ];
+
+        /* ---------------- 42 PERTANYAAN JURNAL (6 BAGIAN) ---------------- */
+        const JOURNAL_QUESTIONS = [
+            {
+                sectionId: 'A',
+                sectionTitle: 'A. Memahami Luka',
+                quote: 'Aku tidak harus menyelesaikan semuanya hari ini.',
+                questions: [
+                    { id: 'q_date', text: 'Tanggal Penulisan Jurnal', type: 'journal_date' },
+                    { id: 'q1', text: '1. Identitas atau Judul Luka', type: 'wound_select' },
+                    { id: 'q2', text: '2. Kejadian yang Dialami', type: 'textarea', placeholder: 'Ceritakan rentetan kejadian yang terjadi...' },
+                    { id: 'q3', text: '3. Waktu Kejadian dan Usiaku Saat Itu', type: 'text', placeholder: 'Misal: Tahun 2018, saat usia 19 tahun' },
+                    { id: 'q4', text: '4. Orang-orang yang Terlibat', type: 'text', placeholder: 'Siapa saja pihak yang terlibat...' },
+                    { id: 'q5', text: '5. Perasaan yang Muncul Saat Mengingatnya', type: 'mood_multi' },
+                    { id: 'q6', text: '6. Intensitas Rasa Sakit Saat Ini (Skala 0–10)', type: 'range' },
+                    { id: 'q7', text: '7. Pikiran yang Muncul Saat Kejadian', type: 'textarea', placeholder: 'Apa yang terlintas di pikiranmu saat itu?' },
+                    { id: 'q8', text: '8. Kebutuhan yang Tidak Terpenuhi', type: 'textarea', placeholder: 'Kebutuhan emosional apa yang tidak kamu dapatkan saat itu?' },
+                    { id: 'q9', text: '9. Bagian yang Paling Menyakitkan', type: 'textarea', placeholder: 'Titik mana dari kejadian ini yang paling melukai hatimu?' },
+                    { id: 'q10', text: '10. Respons atau Caraku Bertahan Saat Itu', type: 'textarea', placeholder: 'Bagaimana kamu berusaha melindungi dirimu saat itu?' }
+                ]
+            },
+            {
+                sectionId: 'B',
+                sectionTitle: 'B. Dampak Luka',
+                quote: 'Aku boleh berhenti kapan pun aku membutuhkan jeda.',
+                questions: [
+                    { id: 'q11', text: '11. Dampak Terhadap Kehidupanku Sekarang', type: 'textarea', placeholder: 'Bagaimana luka ini mempengaruhi hubungan, kerja, atau perasaanmu sekarang?' },
+                    { id: 'q12', text: '12. Pemicu yang Membuat Luka Muncul Kembali', type: 'textarea', placeholder: 'Kondisi atau kata-kata apa yang sering memicu ingatan luka ini?' },
+                    { id: 'q13', text: '13. Keyakinan Tentang Diriku yang Terbentuk Akibat Kejadian', type: 'textarea', placeholder: 'Misal: "Aku tidak berharga" atau "Orang lain selalu meninggalkanku"' },
+                    { id: 'q14', text: '14. Bukti dan Sudut Pandang Lain Terhadap Keyakinan Tersebut', type: 'textarea', placeholder: 'Apakah keyakinan negatif itu 100% fakta? Adakah bukti sebaliknya?' },
+                    { id: 'q15', text: '15. Hal yang Sebenarnya Pantas Kudapatkan Saat Itu', type: 'textarea', placeholder: 'Perlakuan atau perlindungan seperti apa yang layak kamu terima?' }
+                ]
+            },
+            {
+                sectionId: 'C',
+                sectionTitle: 'C. Harapan',
+                quote: 'Aku tidak perlu memaksakan diriku untuk merasa baik-baik saja.',
+                questions: [
+                    { id: 'q16', text: '16. Harapan yang Kumiliki Saat Kejadian', type: 'textarea', placeholder: 'Apa yang kamu harapkan terjadi saat kejadian berlangsung?' },
+                    { id: 'q17', text: '17. Harapan Terhadap Orang yang Terlibat', type: 'textarea', placeholder: 'Apa yang kamu harapkan dari mereka?' },
+                    { id: 'q18', text: '18. Harapan yang Belum Terpenuhi Sampai Sekarang', type: 'textarea', placeholder: 'Harapan apa yang masih menggantung hingga hari ini?' },
+                    { id: 'q19', text: '19. Harapan Terhadap Diriku Sendiri', type: 'textarea', placeholder: 'Bagaimana kamu ingin memperlakukan dirimu?' },
+                    { id: 'q20', text: '20. Harapan Untuk Kehidupanku Ke Depan', type: 'textarea', placeholder: 'Masa depan seperti apa yang ingin kamu bangun?' },
+                    { id: 'q21', text: '21. Kebutuhan yang Ingin Kupenuhi Melalui Harapan Tersebut', type: 'textarea', placeholder: 'Ketenangan, rasa aman, atau penghargaan?' }
+                ]
+            },
+            {
+                sectionId: 'D',
+                sectionTitle: 'D. Mencari Jalan Keluar',
+                quote: 'Pemulihan bukan perlombaan.',
+                questions: [
+                    { id: 'q22', text: '22. Hal yang Tidak Bisa Kuubah dari Masa Lalu', type: 'textarea', placeholder: 'Fakta apa tentang masa lalu yang harus diakui telah terjadi?' },
+                    { id: 'q23', text: '23. Hal yang Masih Bisa Kuubah Sekarang', type: 'textarea', placeholder: 'Respons atau keputusan apa yang ada dalam kendalimu saat ini?' },
+                    { id: 'q24', text: '24. Jalan Keluar yang Realistis Untuk Luka Ini', type: 'textarea', placeholder: 'Langkah nyata yang dapat membantumu memproses luka ini...' },
+                    { id: 'q25', text: '25. Batasan yang Perlu Kubangun', type: 'textarea', placeholder: 'Batasan emosional atau fisik apa yang perlu kamu tetapkan?' },
+                    { id: 'q26', text: '26. Langkah Kecil yang Bisa Kulakukan Hari Ini', type: 'textarea', placeholder: 'Satu aksi paling ringan untuk merawat dirimu hari ini...' },
+                    { id: 'q27', text: '27. Cara Memenuhi Kebutuhanku Sekarang', type: 'textarea', placeholder: 'Bagaimana kamu bisa memenuhi kebutuhanmu sendiri tanpa menunggu orang lain?' },
+                    { id: 'q28', text: '28. Hal yang Perlu Kulakukan Ketika Luka Ini Muncul Kembali', type: 'textarea', placeholder: 'Rencana aksi saat pemicu luka kambuh...' }
+                ]
+            },
+            {
+                sectionId: 'E',
+                sectionTitle: 'E. Pemulihan Diri',
+                quote: 'Aku tidak harus memaafkan untuk mulai merawat diriku.',
+                questions: [
+                    { id: 'q29', text: '29. Hal yang Ingin Kusampaikan Kepada Diriku di Masa Lalu', type: 'textarea', placeholder: 'Tulis pesan penuh kasih sayang untuk dirimu yang terluka dulu...' },
+                    { id: 'q30', text: '30. Hal yang Ingin Kupahami Tentang Diriku', type: 'textarea', placeholder: 'Wawasan baru apa yang kamu sadari tentang kepribadianmu?' },
+                    { id: 'q31', text: '31. Hal yang Ingin Mulai Kulepaskan', type: 'textarea', placeholder: 'Beban emosional atau ekspektasi apa yang ingin perlahan kamu letakkan?' },
+                    { id: 'q32', text: '32. Hal yang Ingin Kujaga Dari Diriku', type: 'textarea', placeholder: 'Kekuatan atau kebaikan apa dalam dirimu yang ingin tetap dipertahankan?' },
+                    { id: 'q33', text: '33. Kalimat Pengingat Untuk Diriku', type: 'textarea', placeholder: 'Kalimat afirmasi pribadi saat kamu merasa rendah...' },
+                    { id: 'q34', text: '34. Bagaimana Aku Ingin Menjalani Hidup Setelah Memahami Luka Ini', type: 'textarea', placeholder: 'Komitmen baru dalam menjalani keseharian...' },
+                    { id: 'q35', text: '35. Arti Menerima Luka Ini Bagiku (Tanpa Harus Memaafkan/Mengikhlaskan)', type: 'textarea', placeholder: 'Apa arti mengakui keberadaan luka ini tanpa paksaan merasa baik-baik saja?' }
+                ]
+            },
+            {
+                sectionId: 'F',
+                sectionTitle: 'F. Evaluasi',
+                quote: 'Langkah kecil hari ini tetap berarti.',
+                questions: [
+                    { id: 'q36', text: '36. Intensitas Rasa Sakit Sebelum Menulis (0–10)', type: 'range' },
+                    { id: 'q37', text: '37. Intensitas Rasa Sakit Setelah Menulis (0–10)', type: 'range' },
+                    { id: 'q38', text: '38. Perasaan yang Dominan Setelah Menulis', type: 'mood_single' },
+                    { id: 'q39', text: '39. Pemahaman Baru yang Kudapatkan', type: 'textarea', placeholder: 'Pelajaran atau kejelasan apa yang kamu temukan dari sesi journaling ini?' },
+                    { id: 'q40', text: '40. Hal yang Masih Belum Selesai', type: 'textarea', placeholder: 'Pertanyaan atau emosi apa yang masih perlu diproses di lain waktu?' },
+                    { id: 'q41', text: '41. Harapan atau Tujuan yang Ingin Kutindaklanjuti', type: 'textarea', placeholder: 'Rencana tindak lanjut sederhana...' },
+                    { id: 'q42', text: '42. Status Pemrosesan Luka Ini', type: 'status_select' }
+                ]
+            }
+        ];
+
+        /* ---------------- INITIALIZATION & AUTH ---------------- */
+        window.onload = function() {
+            checkSession();
+            initDateDisplay();
+            renderDashboardMoodPicker();
+            initCharts();
+            
+            // Random Affirmation
+            const randAff = AFFIRMATIONS[Math.floor(Math.random() * AFFIRMATIONS.length)];
+            document.getElementById('random-affirmation').textContent = `"${randAff}"`;
+        };
+
+        function switchAuthTab(type) {
+            const loginForm = document.getElementById('form-login');
+            const regForm = document.getElementById('form-register');
+            const loginBtn = document.getElementById('tab-btn-login');
+            const regBtn = document.getElementById('tab-btn-register');
+
+            if (type === 'login') {
+                loginForm.classList.remove('hidden');
+                regForm.classList.add('hidden');
+                loginBtn.className = "flex-1 py-2 rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-white shadow-sm transition";
+                regBtn.className = "flex-1 py-2 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-white transition";
+            } else {
+                regForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+                regBtn.className = "flex-1 py-2 rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-white shadow-sm transition";
+                loginBtn.className = "flex-1 py-2 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-white transition";
+            }
+        }
+
+        function getUsersFromStorage() {
+            const users = localStorage.getItem(AUTH_USER_KEY);
+            return users ? JSON.parse(users) : [];
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('reg-username').value.trim();
+            const pin = document.getElementById('reg-pin').value.trim();
+
+            if (!username || !pin) return;
+
+            const users = getUsersFromStorage();
+            if (users.find(u => u.username.toLowerCase() === username.toLowerCase())) {
+                alert('Nama pengguna sudah terdaftar. Silakan gunakan nama lain atau masuk.');
+                return;
+            }
+
+            const newUser = { id: 'u-' + Date.now(), username, pin };
+            users.push(newUser);
+            localStorage.setItem(AUTH_USER_KEY, JSON.stringify(users));
+
+            // Auto Login after register
+            loginUser(newUser);
+            showToast(`Ruang pulih baru untuk "${username}" berhasil dibuat!`);
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const pin = document.getElementById('login-pin').value.trim();
+
+            let users = getUsersFromStorage();
+            
+            // Jika belum ada pengguna sama sekali di browser ini, otomatis daftarkan akun pertama
+            if (users.length === 0) {
+                const newUser = { id: 'u-' + Date.now(), username, pin };
+                users.push(newUser);
+                localStorage.setItem(AUTH_USER_KEY, JSON.stringify(users));
+                loginUser(newUser);
+                showToast(`Ruang pribadi pertama untuk "${username}" berhasil dibuat!`);
+                return;
+            }
+
+            const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.pin === pin);
+
+            if (user) {
+                loginUser(user);
+                showToast(`Selamat datang kembali, ${user.username}!`);
+            } else {
+                alert('Nama pengguna atau PIN yang kamu masukkan salah.');
+            }
+        }
+
+        function loginUser(user) {
+            currentUser = user;
+            localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('app-screen').classList.remove('hidden');
+
+            // Update UI Profile Name & Avatar Initials
+            document.getElementById('user-display-name').textContent = user.username;
+            const initials = user.username.substring(0, 2).toUpperCase();
+            document.getElementById('user-avatar').textContent = initials;
+
+            loadStorageData();
+            renderDashboardView();
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem(SESSION_KEY);
+            document.getElementById('app-screen').classList.add('hidden');
+            document.getElementById('auth-screen').classList.remove('hidden');
+            showToast('Ruang pulih dikunci kembali.');
+        }
+
+        function checkSession() {
+            const session = localStorage.getItem(SESSION_KEY);
+            if (session) {
+                try {
+                    const user = JSON.parse(session);
+                    loginUser(user);
+                } catch(e) {
+                    console.error("Session error", e);
+                }
+            }
+        }
+
+        function loadStorageData() {
+            if (!currentUser) return;
+            const userStorageKey = `${APP_STORAGE_KEY}_${currentUser.id}`;
+            const data = localStorage.getItem(userStorageKey);
+            if (data) {
+                try {
+                    appData = JSON.parse(data);
+                } catch(e) {
+                    console.error("Error parsing stored data", e);
+                }
+            } else {
+                // Seed initial sample data for new user
+                appData = {
+                    wounds: [
+                        { id: 'w-1', title: 'Perasaan Ditinggalkan Masa Lalu', description: 'Rasa cemas tersirat dari kegagalan relasi sebelumnya.', createdAt: '2026-10-01' }
+                    ],
+                    journals: [],
+                    activeCheckinMoods: []
+                };
+                saveStorageData();
+            }
+        }
+
+        function saveStorageData() {
+            if (!currentUser) return;
+            const userStorageKey = `${APP_STORAGE_KEY}_${currentUser.id}`;
+            localStorage.setItem(userStorageKey, JSON.stringify(appData));
+        }
+
+        function saveStorageData() {
+            localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(appData));
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'px-4 py-3 rounded-2xl bg-slate-800 text-white text-xs shadow-xl border border-slate-700 transition-all transform translate-y-2 opacity-0 flex items-center gap-2';
+            toast.innerHTML = `<i class="bi bi-check-circle-fill text-lavender-400"></i> ${msg}`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 50);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function initDateDisplay() {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const todayStr = new Date().toLocaleDateString('id-ID', options);
+            document.getElementById('current-date-text').textContent = todayStr;
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        /* ---------------- DASHBOARD & CALENDAR LOGIC ---------------- */
+        function renderDashboardView() {
+            // Render Stats Overview
+            document.getElementById('stat-total-journals').textContent = appData.journals.length;
+            document.getElementById('stat-total-wounds').textContent = appData.wounds.length;
+
+            let totalDiff = 0;
+            let journalCount = 0;
+            appData.journals.forEach(j => {
+                const before = parseFloat(j.answers['q6'] || j.answers['q36'] || 0);
+                const after = parseFloat(j.answers['q37'] || 0);
+                if (before > 0 || after > 0) {
+                    totalDiff += (before - after);
+                    journalCount++;
+                }
+            });
+            const avgDiff = journalCount > 0 ? (totalDiff / journalCount).toFixed(1) : '0.0';
+            document.getElementById('stat-pain-diff').textContent = `- ${avgDiff} Poin`;
+
+            // Render Recent Journals
+            renderRecentJournals();
+
+            // Render Activity Calendar
+            renderCalendar();
+
+            // Update Mini Trend Chart
+            updateMiniTrendChart();
+        }
+
+        function renderRecentJournals() {
+            const container = document.getElementById('recent-journals-list');
+            if (!container) return;
+
+            const recent = [...appData.journals].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 3);
+
+            if (recent.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 py-3 text-center">Belum ada jurnal yang ditulis. Klik "Mulai Menulis Jurnal Baru" untuk memulai.</p>`;
+                return;
+            }
+
+            container.innerHTML = recent.map(j => {
+                const wound = appData.wounds.find(w => w.id === j.woundId);
+                const title = wound ? wound.title : 'Refleksi Diri';
+                const before = j.answers['q6'] || j.answers['q36'] || 0;
+                const after = j.answers['q37'] || 0;
+
+                return `
+                    <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200/60 dark:border-slate-700 flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-bold text-lavender-600 dark:text-lavender-300">${formatShortDate(j.date)}</span>
+                            <h4 class="font-bold text-xs text-slate-800 dark:text-white">${title}</h4>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Sakit: ${before} ➔ ${after}</p>
+                        </div>
+                        <button onclick="viewJournalDetail('${j.id}')" class="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-slate-100">Buka</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            const monthTitle = document.getElementById('calendar-month-title');
+            if (!grid || !monthTitle) return;
+
+            const monthsIndo = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            monthTitle.textContent = `${monthsIndo[currentCalendarMonth]} ${currentCalendarYear}`;
+
+            const firstDay = new Date(currentCalendarYear, currentCalendarMonth, 1).getDay();
+            const daysInMonth = new Date(currentCalendarYear, currentCalendarMonth + 1, 0).getDate();
+
+            // Dates that have journal entries
+            const journalDates = new Set(appData.journals.map(j => j.date));
+            const dailyDates = new Set((appData.dailyDiaries || []).map(d => d.date));
+
+            let html = '';
+            // Empty slots for alignment
+            for (let i = 0; i < firstDay; i++) {
+                html += `<div class="h-8"></div>`;
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${currentCalendarYear}-${String(currentCalendarMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const hasJournal = journalDates.has(dateStr);
+                const hasDaily = dailyDates.has(dateStr);
+
+                let bgClass = 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400';
+                if (hasJournal) {
+                    bgClass = 'bg-lavender-500 text-white font-bold shadow-sm';
+                } else if (hasDaily) {
+                    bgClass = 'bg-peach-400 text-slate-900 font-bold shadow-sm';
+                }
+
+                html += `
+                    <div class="h-8 flex items-center justify-center rounded-xl text-xs ${bgClass}">
+                        ${day}
+                    </div>
+                `;
+            }
+            grid.innerHTML = html;
+        }
+
+        function changeCalendarMonth(delta) {
+            currentCalendarMonth += delta;
+            if (currentCalendarMonth < 0) {
+                currentCalendarMonth = 11;
+                currentCalendarYear--;
+            } else if (currentCalendarMonth > 11) {
+                currentCalendarMonth = 0;
+                currentCalendarYear++;
+            }
+            renderCalendar();
+        }
+
+        function toggleDashboardMood(moodName) {
+            if (!appData.activeCheckinMoods) appData.activeCheckinMoods = [];
+            const idx = appData.activeCheckinMoods.indexOf(moodName);
+            if (idx >= 0) {
+                appData.activeCheckinMoods.splice(idx, 1);
+            } else {
+                appData.activeCheckinMoods.push(moodName);
+            }
+            saveStorageData();
+
+            const status = document.getElementById('checkin-save-status');
+            if (status) {
+                status.classList.remove('hidden');
+                setTimeout(() => status.classList.add('hidden'), 2500);
+            }
+            showToast(`Perasaan "${moodName}" tersimpan.`);
+        }
+
+        /* ---------------- WOUNDS MANAGEMENT ---------------- */
+        function renderWoundsView() {
+            const grid = document.getElementById('wounds-grid');
+            if (!grid) return;
+
+            if (appData.wounds.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-slate-400 text-xs bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700">
+                        Belum ada luka emosional yang dicatat. Klik "Tambah Luka Baru" untuk membuat identitas luka.
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = appData.wounds.map(w => {
+                const journalCount = appData.journals.filter(j => j.woundId === w.id).length;
+                return `
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200/70 dark:border-slate-700 shadow-sm flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-peach-100 text-peach-800 dark:bg-slate-700 dark:text-peach-300">
+                                    ${journalCount} Sesi Jurnal
+                                </span>
+                                <div class="flex gap-1">
+                                    <button onclick="editWound('${w.id}')" class="p-1 text-slate-400 hover:text-slate-600 text-xs"><i class="bi bi-pencil-fill"></i></button>
+                                    <button onclick="deleteWound('${w.id}')" class="p-1 text-slate-400 hover:text-red-500 text-xs"><i class="bi bi-trash-fill"></i></button>
+                                </div>
+                            </div>
+                            <h3 class="font-bold text-slate-800 dark:text-white text-base">${w.title}</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed">${w.description || 'Tidak ada deskripsi.'}</p>
+                        </div>
+
+                        <div class="flex gap-2 pt-2 border-t border-slate-100 dark:border-slate-700">
+                            <button onclick="startJournalForWound('${w.id}')" class="flex-1 py-2 rounded-xl bg-lavender-600 hover:bg-lavender-700 text-white font-semibold text-xs transition">
+                                Tulis Jurnal
+                            </button>
+                            <button onclick="viewWoundDetail('${w.id}')" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs hover:bg-slate-200">
+                                Detail
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openCreateWoundModal() {
+            document.getElementById('wound-modal-title').textContent = 'Buat Judul Luka Baru';
+            document.getElementById('wound-id-input').value = '';
+            document.getElementById('wound-title-input').value = '';
+            document.getElementById('wound-desc-input').value = '';
+            document.getElementById('wound-modal').classList.remove('hidden');
+        }
+
+        function editWound(id) {
+            const w = appData.wounds.find(item => item.id === id);
+            if (!w) return;
+            document.getElementById('wound-modal-title').textContent = 'Edit Luka Emosional';
+            document.getElementById('wound-id-input').value = w.id;
+            document.getElementById('wound-title-input').value = w.title;
+            document.getElementById('wound-desc-input').value = w.description || '';
+            document.getElementById('wound-modal').classList.remove('hidden');
+        }
+
+        function closeWoundModal() {
+            document.getElementById('wound-modal').classList.add('hidden');
+        }
+
+        function handleWoundSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('wound-id-input').value;
+            const title = document.getElementById('wound-title-input').value.trim();
+            const description = document.getElementById('wound-desc-input').value.trim();
+
+            if (!title) return;
+
+            if (id) {
+                const idx = appData.wounds.findIndex(w => w.id === id);
+                if (idx >= 0) {
+                    appData.wounds[idx].title = title;
+                    appData.wounds[idx].description = description;
+                }
+            } else {
+                const newWound = {
+                    id: 'w-' + Date.now(),
+                    title,
+                    description,
+                    createdAt: new Date().toISOString()
+                };
+                appData.wounds.push(newWound);
+            }
+
+            saveStorageData();
+            closeWoundModal();
+            renderWoundsView();
+            showToast('Luka emosional berhasil disimpan!');
+        }
+
+        function deleteWound(id) {
+            if (confirm("Hapus identitas luka ini beserta riwayatnya?")) {
+                appData.wounds = appData.wounds.filter(w => w.id !== id);
+                appData.journals = appData.journals.filter(j => j.woundId !== id);
+                saveStorageData();
+                renderWoundsView();
+                renderDashboardView();
+                showToast('Luka emosional dihapus.');
+            }
+        }
+
+        /* ---------------- NAVIGATION / TABS ---------------- */
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            // Style Desktop Nav
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50';
+            });
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) {
+                activeNav.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all bg-lavender-100 text-lavender-700 dark:bg-lavender-900/40 dark:text-lavender-300 font-semibold';
+            }
+
+            // Render specific tab views
+            if (tabId === 'dashboard') renderDashboardView();
+            if (tabId === 'wounds') renderWoundsView();
+            if (tabId === 'history') renderHistoryView();
+            if (tabId === 'analytics') renderAnalyticsView();
+        }
+
+        /* ---------------- DASHBOARD ---------------- */
+        function renderDashboardMoodPicker() {
+            const container = document.getElementById('dashboard-mood-picker');
+            container.innerHTML = EMOTIONS.map(e => `
+                <button onclick="toggleDashboardMood('${e.name}')" id="dash-mood-${e.name}" class="flex flex-col items-center justify-center p-3 rounded-2xl border ${e.color} hover:scale-105 transition">
+                    <span class="text-2xl">${e.emoji}</span>
+                    <span class="text-[10px] font-semibold mt-1">${e.name}</span>
+                </button>
+            `).join('');
+        }
+
+        /* ---------------- DAILY DIARY RELEASE MOOD LOGIC ---------------- */
+        function openDailyDiaryModal() {
+            const todayStr = new Date().toISOString().split('T')[0];
+            document.getElementById('daily-date-input').value = todayStr;
+            document.getElementById('daily-diary-date-subtitle').textContent = formatIndoDate(todayStr);
+            
+            // Render Mood Picker inside daily modal
+            const moodContainer = document.getElementById('daily-mood-options');
+            moodContainer.innerHTML = EMOTIONS.map(e => `
+                <button type="button" onclick="selectDailyMood('${e.name}')" id="daily-mood-btn-${e.name}" class="p-2 rounded-xl border text-center ${e.color} ${selectedDailyMood === e.name ? 'ring-2 ring-peach-500 font-bold':''} transition">
+                    <div class="text-xl">${e.emoji}</div>
+                    <div class="text-[9px] mt-0.5">${e.name}</div>
+                </button>
+            `).join('');
+
+            switchDailyTab(1);
+            document.getElementById('daily-diary-modal').classList.remove('hidden');
+        }
+
+        function closeDailyDiaryModal() {
+            document.getElementById('daily-diary-modal').classList.add('hidden');
+        }
+
+        function selectDailyMood(moodName) {
+            selectedDailyMood = moodName;
+            EMOTIONS.forEach(e => {
+                const btn = document.getElementById(`daily-mood-btn-${e.name}`);
+                if (btn) {
+                    if (e.name === moodName) {
+                        btn.classList.add('ring-2', 'ring-peach-500', 'font-bold');
+                    } else {
+                        btn.classList.remove('ring-2', 'ring-peach-500', 'font-bold');
+                    }
+                }
+            });
+        }
+
+        function selectDailyIntent(mode) {
+            dailyIntentMode = mode;
+            const btnVent = document.getElementById('btn-intent-vent');
+            const btnSolve = document.getElementById('btn-intent-solve');
+            const secReflect = document.getElementById('daily-sec-reflect');
+
+            if (mode === 'vent') {
+                btnVent.className = "p-3.5 rounded-2xl border border-lavender-200 bg-lavender-50 dark:bg-slate-700 text-left transition ring-2 ring-lavender-500";
+                btnSolve.className = "p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-left transition opacity-70";
+                secReflect.classList.add('hidden');
+            } else {
+                btnSolve.className = "p-3.5 rounded-2xl border border-sage-200 bg-sage-50 dark:bg-slate-700 text-left transition ring-2 ring-sage-500";
+                btnVent.className = "p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-left transition opacity-70";
+                secReflect.classList.remove('hidden');
+            }
+        }
+
+        function switchDailyTab(tabNum) {
+            [1, 2, 3].forEach(n => {
+                const sec = document.getElementById(`daily-sec-${n}`);
+                const btn = document.getElementById(`daily-tab-${n}`);
+                if (n === tabNum) {
+                    sec.classList.remove('hidden');
+                    btn.className = "daily-tab-btn px-4 py-1.5 rounded-full font-bold bg-peach-400 text-slate-900 whitespace-nowrap";
+                } else {
+                    sec.classList.add('hidden');
+                    btn.className = "daily-tab-btn px-4 py-1.5 rounded-full font-medium text-slate-400 whitespace-nowrap";
+                }
+            });
+        }
+
+        function handleSaveDailyDiary(e) {
+            e.preventDefault();
+            const date = document.getElementById('daily-date-input').value;
+            const intensity = document.getElementById('daily-intensity-range').value;
+            const energy = document.getElementById('daily-energy-range').value;
+
+            const diaryEntry = {
+                id: 'daily-' + Date.now(),
+                date,
+                mood: selectedDailyMood,
+                intensity,
+                energy,
+                intentMode: dailyIntentMode,
+                events: document.getElementById('daily-q-events').value,
+                impactful: document.getElementById('daily-q-impactful').value,
+                emotionsWhy: document.getElementById('daily-q-emotions-why').value,
+                loopingThoughts: document.getElementById('daily-q-looping-thoughts').value,
+                burdens: document.getElementById('daily-q-burdens').value,
+                unsaid: document.getElementById('daily-q-unsaid').value,
+                triggers: document.getElementById('daily-q-triggers').value,
+                response: document.getElementById('daily-q-response').value,
+                outOfControl: document.getElementById('daily-q-out-of-control').value,
+                needs: document.getElementById('daily-q-needs').value,
+                comfort: document.getElementById('daily-q-comfort').value,
+                appreciation: document.getElementById('daily-q-appreciation').value,
+                leaveBehind: document.getElementById('daily-q-leave-behind').value,
+                closingWords: document.getElementById('daily-q-closing-words').value,
+                createdAt: new Date().toISOString()
+            };
+
+            if (!appData.dailyDiaries) appData.dailyDiaries = [];
+            appData.dailyDiaries.push(diaryEntry);
+
+            // Mark mood on dashboard check-in
+            if (!appData.activeCheckinMoods.includes(selectedDailyMood)) {
+                appData.activeCheckinMoods.push(selectedDailyMood);
+            }
+
+            saveStorageData();
+            closeDailyDiaryModal();
+            renderDashboardView();
+            showToast("Diari harian Release Mood tersimpan!");
+        }
+
+        /* ---------------- HISTORY SUB-TABS & DAILY HISTORY ---------------- */
+        function switchHistorySubTab(sub) {
+            currentHistorySubTab = sub;
+            const btnJournal = document.getElementById('btn-subtab-journal');
+            const btnDaily = document.getElementById('btn-subtab-daily');
+            const journalList = document.getElementById('history-journals-list');
+            const dailyList = document.getElementById('history-daily-list');
+            const filterBar = document.getElementById('history-filter-bar');
+
+            if (sub === 'journal') {
+                btnJournal.className = "px-4 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-white shadow-sm";
+                btnDaily.className = "px-4 py-1.5 rounded-lg text-slate-500 hover:text-slate-800 dark:hover:text-white";
+                journalList.classList.remove('hidden');
+                dailyList.classList.add('hidden');
+                filterBar.classList.remove('hidden');
+                applyHistoryFilters();
+            } else {
+                btnDaily.className = "px-4 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-white shadow-sm";
+                btnJournal.className = "px-4 py-1.5 rounded-lg text-slate-500 hover:text-slate-800 dark:hover:text-white";
+                dailyList.classList.remove('hidden');
+                journalList.classList.add('hidden');
+                filterBar.classList.add('hidden');
+                renderDailyHistory();
+            }
+        }
+
+        function renderDailyHistory() {
+            const list = document.getElementById('history-daily-list');
+            const diaries = appData.dailyDiaries || [];
+
+            if (diaries.length === 0) {
+                list.innerHTML = `
+                    <div class="text-center py-12 text-slate-400 text-xs bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700">
+                        Belum ada diari harian yang disimpan. Klik "Isi Diari Harian" di beranda untuk memulai.
+                    </div>
+                `;
+                return;
+            }
+
+            const sorted = [...diaries].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            list.innerHTML = sorted.map(d => {
+                const emotionObj = EMOTIONS.find(e => e.name === d.mood) || { emoji: '🌤️', name: d.mood };
+                return `
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200/70 dark:border-slate-700 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-peach-100 text-peach-800 dark:bg-slate-700 dark:text-peach-300">
+                                    ${emotionObj.emoji} ${d.mood}
+                                </span>
+                                <span class="text-[11px] text-slate-400">${formatIndoDate(d.date)}</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-500">
+                                    ${d.intentMode === 'vent' ? '💬 Pelepasan' : '💡 Solusi'}
+                                </span>
+                            </div>
+                            <h3 class="font-bold text-slate-800 dark:text-white text-sm mt-1">
+                                ${d.events ? d.events.substring(0, 60) + '...' : 'Catatan Diari Harian'}
+                            </h3>
+                            <p class="text-xs text-slate-500">Intensitas Emosi: <strong>${d.intensity}/10</strong> • Energi: <strong>${d.energy}/10</strong></p>
+                        </div>
+
+                        <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+                            <button onclick="viewDailyDetail('${d.id}')" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold hover:bg-slate-200 flex items-center gap-1">
+                                <i class="bi bi-eye-fill"></i> Lihat Detail
+                            </button>
+                            <button onclick="deleteDailyDiary('${d.id}')" class="p-2 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-500 hover:bg-red-100 text-xs">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function viewDailyDetail(id) {
+            const diary = (appData.dailyDiaries || []).find(d => d.id === id);
+            if (!diary) return;
+
+            document.getElementById('view-daily-date').textContent = formatIndoDate(diary.date);
+            const body = document.getElementById('view-daily-body');
+
+            const emotionObj = EMOTIONS.find(e => e.name === diary.mood) || { emoji: '🌤️', name: diary.mood };
+
+            body.innerHTML = `
+                <div class="p-4 rounded-2xl bg-peach-50 dark:bg-slate-700/50 border border-peach-100 dark:border-slate-600 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                            <span class="text-xl">${emotionObj.emoji}</span> Mood: ${diary.mood}
+                        </span>
+                        <span class="text-xs font-semibold text-slate-500">Perasaan: ${diary.intensity}/10 | Energi: ${diary.energy}/10</span>
+                    </div>
+                </div>
+
+                ${diary.events ? `
+                    <div>
+                        <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Kejadian Hari Ini:</p>
+                        <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 leading-relaxed">${diary.events}</p>
+                    </div>
+                ` : ''}
+
+                ${diary.burdens ? `
+                    <div>
+                        <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Beban yang Dirasakan:</p>
+                        <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 leading-relaxed">${diary.burdens}</p>
+                    </div>
+                ` : ''}
+
+                ${diary.unsaid ? `
+                    <div>
+                        <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Kata-kata Terpendam:</p>
+                        <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 leading-relaxed">${diary.unsaid}</p>
+                    </div>
+                ` : ''}
+
+                ${diary.leaveBehind ? `
+                    <div>
+                        <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Hal Yang Ditinggalkan Untuk Malam Ini:</p>
+                        <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 leading-relaxed">${diary.leaveBehind}</p>
+                    </div>
+                ` : ''}
+
+                ${diary.closingWords ? `
+                    <div>
+                        <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Kalimat Penutup Hari:</p>
+                        <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 leading-relaxed italic">${diary.closingWords}</p>
+                    </div>
+                ` : ''}
+            `;
+
+            document.getElementById('view-daily-modal').classList.remove('hidden');
+        }
+
+        function closeViewDailyModal() {
+            document.getElementById('view-daily-modal').classList.add('hidden');
+        }
+
+        function deleteDailyDiary(id) {
+            if (confirm("Hapus diari harian ini dari riwayat?")) {
+                appData.dailyDiaries = (appData.dailyDiaries || []).filter(d => d.id !== id);
+                saveStorageData();
+                renderDailyHistory();
+                showToast("Diari harian dihapus.");
+            }
+        }
+
+        /* ---------------- DETAIL WOUND (SATU LUKA BANYAK JURNAL) ---------------- */
+        function viewWoundDetail(woundId) {
+            const w = appData.wounds.find(item => item.id === woundId);
+            if (!w) return;
+
+            document.getElementById('wound-detail-title').textContent = w.title;
+            document.getElementById('wound-detail-desc').textContent = w.description || 'Tidak ada deskripsi singkat.';
+
+            const woundJournals = appData.journals.filter(j => j.woundId === woundId).sort((a,b) => new Date(a.date) - new Date(b.date));
+            const listContainer = document.getElementById('wound-journals-list');
+
+            if (woundJournals.length === 0) {
+                listContainer.innerHTML = `<p class="text-xs text-slate-400">Belum ada jurnal yang ditulis untuk luka ini.</p>`;
+            } else {
+                listContainer.innerHTML = woundJournals.map(j => `
+                    <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-700 border border-slate-200/70 dark:border-slate-600 flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400">${formatIndoDate(j.date)}</span>
+                            <p class="text-xs font-semibold text-slate-800 dark:text-white">Skala Sakit: ${j.answers['q6'] || j.answers['q36'] || 0} ➔ ${j.answers['q37'] || 0}</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Langkah Kecil: "${j.answers['q26'] || 'Belum diisi'}"</p>
+                        </div>
+                        <button onclick="viewJournalDetail('${j.id}')" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-600 text-xs font-semibold hover:bg-slate-200">Lihat</button>
+                    </div>
+                `).join('');
+            }
+
+            // Render specific wound chart
+            const ctx = document.getElementById('woundDetailChart').getContext('2d');
+            if (woundDetailChartInst) woundDetailChartInst.destroy();
+
+            woundDetailChartInst = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: woundJournals.map(j => formatShortDate(j.date)),
+                    datasets: [
+                        { label: 'Sebelum', data: woundJournals.map(j => j.answers['q6'] || j.answers['q36'] || 0), borderColor: '#f87171', tension: 0.3 },
+                        { label: 'Sesudah', data: woundJournals.map(j => j.answers['q37'] || 0), borderColor: '#4ade80', tension: 0.3 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            document.getElementById('wound-detail-modal').classList.remove('hidden');
+        }
+
+        function closeWoundDetailModal() {
+            document.getElementById('wound-detail-modal').classList.add('hidden');
+        }
+
+        /* ---------------- JOURNAL FORM & STEP FLOW ---------------- */
+        function startNewJournal() {
+            activeJournalForm = {
+                id: 'j-' + Date.now(),
+                woundId: appData.wounds[0] ? appData.wounds[0].id : '',
+                date: new Date().toISOString().split('T')[0],
+                currentStep: 0,
+                answers: {},
+                isDraft: false
+            };
+            openJournalModal();
+        }
+
+        function startJournalForWound(woundId) {
+            startNewJournal();
+            activeJournalForm.woundId = woundId;
+            openJournalModal();
+        }
+
+        function openJournalModal() {
+            renderJournalFormStep(activeJournalForm.currentStep);
+            document.getElementById('journal-modal').classList.remove('hidden');
+        }
+
+        function closeJournalModal() {
+            document.getElementById('journal-modal').classList.add('hidden');
+        }
+
+        function jumpToSection(secIdx) {
+            activeJournalForm.currentStep = secIdx;
+            renderJournalFormStep(secIdx);
+        }
+
+        function renderJournalFormStep(stepIdx) {
+            const secData = JOURNAL_QUESTIONS[stepIdx];
+            document.getElementById('form-section-title').textContent = secData.sectionTitle;
+            document.getElementById('form-progress-text').textContent = `Bagian ${stepIdx + 1} dari 6`;
+            document.getElementById('section-quote').textContent = `"${secData.quote}"`;
+            
+            // Progress bar calculation
+            const pct = ((stepIdx + 1) / 6) * 100;
+            document.getElementById('journal-progress-bar').style.width = `${pct}%`;
+
+            // Active step pills styling
+            const pills = document.querySelectorAll('.sec-pill');
+            pills.forEach((p, idx) => {
+                if (idx === stepIdx) {
+                    p.className = 'sec-pill px-3 py-1 rounded-full font-semibold bg-lavender-600 text-white whitespace-nowrap';
+                } else {
+                    p.className = 'sec-pill px-3 py-1 rounded-full text-slate-400 dark:text-slate-500 hover:text-slate-600 whitespace-nowrap';
+                }
+            });
+
+            // Buttons state
+            document.getElementById('btn-prev-step').disabled = stepIdx === 0;
+            const nextBtn = document.getElementById('btn-next-step');
+            if (stepIdx === 5) {
+                nextBtn.innerHTML = `<i class="bi bi-check-circle-fill"></i> Simpan Jurnal`;
+                nextBtn.className = "px-5 py-2.5 rounded-xl bg-sage-600 hover:bg-sage-700 text-white text-xs font-semibold shadow-sm transition flex items-center gap-1.5";
+            } else {
+                nextBtn.innerHTML = `Selanjutnya <i class="bi bi-arrow-right"></i>`;
+                nextBtn.className = "px-5 py-2.5 rounded-xl bg-lavender-600 hover:bg-lavender-700 text-white text-xs font-semibold shadow-sm transition flex items-center gap-1.5";
+            }
+
+            // Render Questions
+            const container = document.getElementById('form-questions-container');
+            container.innerHTML = secData.questions.map(q => renderQuestionField(q)).join('');
+        }
+
+        function renderQuestionField(q) {
+            const val = activeJournalForm.answers[q.id] || (q.id === 'q_date' ? activeJournalForm.date : '');
+
+            if (q.type === 'journal_date') {
+                return `
+                    <div class="space-y-2 bg-lavender-50/50 dark:bg-slate-900/40 p-3.5 rounded-2xl border border-lavender-100 dark:border-slate-700">
+                        <label class="block text-xs font-bold text-slate-800 dark:text-white">${q.text}</label>
+                        <input type="date" value="${val}" onchange="updateFormAnswer('q_date', this.value); activeJournalForm.date = this.value;" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-800 dark:text-slate-200">
+                    </div>
+                `;
+            }
+
+            if (q.type === 'wound_select') {
+                const options = appData.wounds.map(w => `<option value="${w.id}" ${activeJournalForm.woundId === w.id ? 'selected':''}>${w.title}</option>`).join('');
+                return `
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-800 dark:text-white">${q.text}</label>
+                        <div class="flex gap-2">
+                            <select onchange="updateFormAnswer('${q.id}', this.value); activeJournalForm.woundId=this.value;" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-200">
+                                ${options}
+                            </select>
+                            <button type="button" onclick="openCreateWoundModal()" class="px-3 py-2 rounded-xl bg-lavender-100 dark:bg-slate-700 text-lavender-700 dark:text-slate-200 text-xs font-semibold whitespace-nowrap">+ Baru</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (q.type === 'textarea') {
+                return `
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-800 dark:text-white">${q.text}</label>
+                        <textarea oninput="updateFormAnswer('${q.id}', this.value)" rows="3" placeholder="${q.placeholder || ''}" class="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-lavender-400 leading-relaxed">${val}</textarea>
+                    </div>
+                `;
+            }
+
+            if (q.type === 'text') {
+                return `
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-800 dark:text-white">${q.text}</label>
+                        <input type="text" oninput="updateFormAnswer('${q.id}', this.value)" value="${val}" placeholder="${q.placeholder || ''}" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-lavender-400">
+                    </div>
+                `;
+            }
+
+            if (q.type === 'range') {
+                const currentScore = val !== '' ? val : 5;
+                return `
+                    <div class="space-y-2 bg-slate-50 dark:bg-slate-900/60 p-4 rounded-2xl border border-slate-100 dark:border-slate-700">
+                        <div class="flex justify-between items-center">
+                            <label class="block text-xs font-bold text-slate-800 dark:text-white">${q.text}</label>
+                            <span id="range-val-${q.id}" class="px-2.5 py-1 rounded-lg bg-lavender-600 text-white font-bold text-xs">${currentScore} / 10</span>
+                        </div>
+                        <input type="range" min="0" max="10" value="${currentScore}" oninput="updateFormAnswer('${q.id}', this.value); document.getElementById('range-val-${q.id}').textContent=this.value+' / 10';" class="w-full accent-lavender-600">
+                        <div class="flex justify-between text-[10px] text-slate-400">
+                            <span>0 (Tidak Sakit)</span>
+                            <span>5 (Sedang)</span>
+                            <span>10 (Sangat Hebat)</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (q.type === 'mood_multi' || q.type === 'mood_single') {
+                const selected = Array.isArray(val) ? val : (val ? [val] : []);
+                return `
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-800 dark:text-white">${q.text}</label>
+                        <div class="grid grid-cols-4 sm:grid-cols-8 gap-2">
+                            ${EMOTIONS.map(e => {
+                                const isSel = selected.includes(e.name);
+                                return `
+                                    <button type="button" onclick="toggleFormMood('${q.id}', '${e.name}', ${q.type === 'mood_single'})" class="p-2 rounded-xl border text-center ${e.color} ${isSel ? 'ring-2 ring-lavender-600 font-bold':''} transition">
+                                        <div class="text-xl">${e.emoji}</div>
+                                        <div class="text-[9px] mt-0.5">${e.name}</div>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (q.type === 'status_select') {
+                const options = ['Belum mulai', 'Sedang diproses', 'Perlu waktu', 'Sudah lebih dipahami', 'Masih membutuhkan perhatian'];
+                return `
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-800 dark:text-white">${q.text}</label>
+                        <select onchange="updateFormAnswer('${q.id}', this.value)" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-200">
+                            ${options.map(opt => `<option value="${opt}" ${val===opt?'selected':''}>${opt}</option>`).join('')}
+                        </select>
+                    </div>
+                `;
+            }
+
+            return '';
+        }
+
+        function updateFormAnswer(qId, val) {
+            activeJournalForm.answers[qId] = val;
+            showAutoSaveIndicator();
+        }
+
+        function toggleFormMood(qId, moodName, isSingle) {
+            let current = activeJournalForm.answers[qId] || (isSingle ? '' : []);
+            if (isSingle) {
+                activeJournalForm.answers[qId] = moodName;
+            } else {
+                if (!Array.isArray(current)) current = [];
+                if (current.includes(moodName)) {
+                    current = current.filter(m => m !== moodName);
+                } else {
+                    current.push(moodName);
+                }
+                activeJournalForm.answers[qId] = current;
+            }
+            renderJournalFormStep(activeJournalForm.currentStep);
+            showAutoSaveIndicator();
+        }
+
+        function showAutoSaveIndicator() {
+            const ind = document.getElementById('auto-save-indicator');
+            ind.textContent = 'Menyimpan...';
+            setTimeout(() => { ind.textContent = 'Disimpan otomatis'; }, 500);
+        }
+
+        function navigateStep(direction) {
+            const newStep = activeJournalForm.currentStep + direction;
+            if (newStep >= 0 && newStep < 6) {
+                activeJournalForm.currentStep = newStep;
+                renderJournalFormStep(newStep);
+            } else if (newStep === 6) {
+                saveCompleteJournal();
+            }
+        }
+
+        function saveDraft() {
+            activeJournalForm.isDraft = true;
+            saveJournalToStorage();
+            closeJournalModal();
+            renderDashboardView();
+            showToast("Draft jurnal berhasil disimpan.");
+        }
+
+        function saveCompleteJournal() {
+            activeJournalForm.isDraft = false;
+            saveJournalToStorage();
+            closeJournalModal();
+            switchTab('history');
+            showToast("Jurnal pemulihan berhasil disimpan!");
+        }
+
+        function saveJournalToStorage() {
+            const now = new Date().toISOString();
+            const journalObj = {
+                id: activeJournalForm.id,
+                woundId: activeJournalForm.woundId,
+                date: activeJournalForm.date,
+                createdAt: now,
+                answers: activeJournalForm.answers,
+                isDraft: activeJournalForm.isDraft
+            };
+
+            const idx = appData.journals.findIndex(j => j.id === journalObj.id);
+            if (idx >= 0) {
+                appData.journals[idx] = journalObj;
+            } else {
+                appData.journals.push(journalObj);
+            }
+
+            saveStorageData();
+        }
+
+        /* ---------------- HISTORY & FILTERS ---------------- */
+        function renderHistoryView() {
+            updateWoundSelectOptions();
+            applyHistoryFilters();
+        }
+
+        function updateWoundSelectOptions() {
+            const sel = document.getElementById('filter-wound');
+            if(!sel) return;
+            sel.innerHTML = `<option value="ALL">Semua Luka</option>` + appData.wounds.map(w => `<option value="${w.id}">${w.title}</option>`).join('');
+        }
+
+        function toggleCustomDateFilter(val) {
+            const container = document.getElementById('custom-date-container');
+            if (val === 'custom') {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        function applyHistoryFilters() {
+            const woundFilter = document.getElementById('filter-wound').value;
+            const statusFilter = document.getElementById('filter-status').value;
+            const timeFilter = document.getElementById('filter-time').value;
+            const search = document.getElementById('filter-search').value.toLowerCase();
+
+            let filtered = [...appData.journals];
+
+            if (woundFilter !== 'ALL') {
+                filtered = filtered.filter(j => j.woundId === woundFilter);
+            }
+
+            if (statusFilter !== 'ALL') {
+                filtered = filtered.filter(j => (j.answers['q42'] || 'Sedang diproses') === statusFilter);
+            }
+
+            // Date Filters
+            if (timeFilter === 'today') {
+                const todayStr = new Date().toISOString().split('T')[0];
+                filtered = filtered.filter(j => j.date === todayStr);
+            } else if (timeFilter === 'week') {
+                const now = new Date();
+                const weekAgo = new Date(now.setDate(now.getDate() - 7));
+                filtered = filtered.filter(j => new Date(j.date) >= weekAgo);
+            } else if (timeFilter === 'month') {
+                const now = new Date();
+                const monthAgo = new Date(now.setMonth(now.getMonth() - 1));
+                filtered = filtered.filter(j => new Date(j.date) >= monthAgo);
+            } else if (timeFilter === 'custom') {
+                const startDate = document.getElementById('filter-start-date').value;
+                const endDate = document.getElementById('filter-end-date').value;
+                if (startDate) filtered = filtered.filter(j => j.date >= startDate);
+                if (endDate) filtered = filtered.filter(j => j.date <= endDate);
+            }
+
+            if (search) {
+                filtered = filtered.filter(j => {
+                    const wound = appData.wounds.find(w => w.id === j.woundId);
+                    const title = wound ? wound.title : '';
+                    const answerText = Object.values(j.answers).join(' ').toLowerCase();
+                    return title.toLowerCase().includes(search) || answerText.includes(search);
+                });
+            }
+
+            const list = document.getElementById('history-journals-list');
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <div class="text-center py-12 text-slate-400 text-xs bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700">
+                        Tidak ada jurnal yang sesuai dengan filter.
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = filtered.map(j => {
+                const wound = appData.wounds.find(w => w.id === j.woundId);
+                const title = wound ? wound.title : 'Refleksi Diri';
+                const painBefore = j.answers['q36'] || j.answers['q6'] || 0;
+                const painAfter = j.answers['q37'] || 0;
+                const status = j.answers['q42'] || 'Sedang diproses';
+
+                return `
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200/70 dark:border-slate-700 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-lavender-100 text-lavender-700 dark:bg-slate-700 dark:text-slate-300">
+                                    ${status}
+                                </span>
+                                <span class="text-[11px] text-slate-400">${formatIndoDate(j.date)}</span>
+                            </div>
+                            <h3 class="font-bold text-slate-800 dark:text-white text-base">${title}</h3>
+                            <p class="text-xs text-slate-500">Perubahan intensitas: <strong class="text-slate-700 dark:text-slate-300">${painBefore}/10</strong> ➔ <strong class="text-lavender-600">${painAfter}/10</strong></p>
+                        </div>
+
+                        <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+                            <button onclick="viewJournalDetail('${j.id}')" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold hover:bg-slate-200 flex items-center gap-1">
+                                <i class="bi bi-eye-fill"></i> Buka
+                            </button>
+                            <button onclick="deleteJournal('${j.id}')" class="p-2 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-500 hover:bg-red-100 text-xs">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function deleteJournal(id) {
+            if (confirm("Hapus jurnal ini dari riwayat?")) {
+                appData.journals = appData.journals.filter(j => j.id !== id);
+                saveStorageData();
+                renderHistoryView();
+                renderDashboardView();
+                showToast("Jurnal dihapus.");
+            }
+        }
+
+        /* ---------------- VIEW JOURNAL DETAILS & PDF ---------------- */
+        function viewJournalDetail(id) {
+            const j = appData.journals.find(item => item.id === id);
+            if (!j) return;
+
+            const wound = appData.wounds.find(w => w.id === j.woundId);
+            document.getElementById('view-modal-date').textContent = formatIndoDate(j.date);
+
+            const area = document.getElementById('pdf-export-area');
+            area.innerHTML = `
+                <div class="border-b pb-4 border-slate-100 dark:border-slate-700">
+                    <span class="text-[10px] uppercase tracking-wider font-bold text-lavender-600">Jurnal Pemulihan Luka Emosional</span>
+                    <h2 class="text-xl font-bold text-slate-800 dark:text-white mt-1">${wound ? wound.title : 'Refleksi Diri'}</h2>
+                    <p class="text-xs text-slate-500 mt-1">Ditulis pada: ${formatIndoDate(j.date)}</p>
+                </div>
+
+                <div class="space-y-6">
+                    ${JOURNAL_QUESTIONS.map(sec => `
+                        <div class="space-y-3">
+                            <h4 class="font-bold text-xs text-lavender-700 dark:text-lavender-300 uppercase tracking-wide border-b border-lavender-100 dark:border-slate-700 pb-1">${sec.sectionTitle}</h4>
+                            <div class="space-y-3 pl-2">
+                                ${sec.questions.map(q => {
+                                    const ans = j.answers[q.id];
+                                    if (!ans) return '';
+                                    return `
+                                        <div>
+                                            <p class="text-xs font-semibold text-slate-700 dark:text-slate-300">${q.text}</p>
+                                            <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 leading-relaxed">${Array.isArray(ans) ? ans.join(', ') : ans}</p>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            document.getElementById('view-journal-modal').classList.remove('hidden');
+        }
+
+        function closeViewModal() {
+            document.getElementById('view-journal-modal').classList.add('hidden');
+        }
+
+        function downloadJournalPDF() {
+            const element = document.getElementById('pdf-export-area');
+            const opt = {
+                margin:       0.5,
+                filename:     'Jurnal_Ruang_Pulih.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        /* ---------------- CHARTS & ANALYTICS ---------------- */
+        function initCharts() {
+            const ctxMini = document.getElementById('miniTrendChart').getContext('2d');
+            miniTrendChartInst = new Chart(ctxMini, {
+                type: 'line',
+                data: { labels: [], datasets: [] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        }
+
+        function updateMiniTrendChart() {
+            if (!miniTrendChartInst) return;
+            const sorted = [...appData.journals].sort((a,b) => new Date(a.date) - new Date(b.date)).slice(-7);
+            
+            const labels = sorted.map(j => formatShortDate(j.date));
+            const beforeData = sorted.map(j => parseFloat(j.answers['q6'] || j.answers['q36'] || 0));
+            const afterData = sorted.map(j => parseFloat(j.answers['q37'] || 0));
+
+            miniTrendChartInst.data = {
+                labels: labels,
+                datasets: [
+                    { label: 'Sebelum', data: beforeData, borderColor: '#f87171', tension: 0.3, fill: false },
+                    { label: 'Sesudah', data: afterData, borderColor: '#4ade80', tension: 0.3, fill: false }
+                ]
+            };
+            miniTrendChartInst.update();
+        }
+
+        function renderAnalyticsView() {
+            const journals = appData.journals;
+
+            // 1. Compare Chart
+            const ctxCompare = document.getElementById('analyticsCompareChart').getContext('2d');
+            if (compareChartInst) compareChartInst.destroy();
+
+            const avgBefore = journals.reduce((acc, j) => acc + parseFloat(j.answers['q6'] || j.answers['q36'] || 0), 0) / (journals.length || 1);
+            const avgAfter = journals.reduce((acc, j) => acc + parseFloat(j.answers['q37'] || 0), 0) / (journals.length || 1);
+
+            compareChartInst = new Chart(ctxCompare, {
+                type: 'bar',
+                data: {
+                    labels: ['Sebelum Menulis', 'Sesudah Menulis'],
+                    datasets: [{
+                        data: [avgBefore.toFixed(1), avgAfter.toFixed(1)],
+                        backgroundColor: ['#fca5a5', '#86efac'],
+                        borderRadius: 12
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            // 2. Mood Distribution
+            const ctxMood = document.getElementById('analyticsMoodChart').getContext('2d');
+            if (moodChartInst) moodChartInst.destroy();
+
+            const moodCounts = {};
+            journals.forEach(j => {
+                const moods = j.answers['q5'] || [];
+                if (Array.isArray(moods)) {
+                    moods.forEach(m => moodCounts[m] = (moodCounts[m] || 0) + 1);
+                }
+            });
+
+            moodChartInst = new Chart(ctxMood, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(moodCounts),
+                    datasets: [{
+                        data: Object.values(moodCounts),
+                        backgroundColor: ['#c084fc', '#60a5fa', '#f87171', '#fbbf24', '#34d399', '#f472b6']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            // 3. Timeline Chart
+            const ctxTimeline = document.getElementById('analyticsTimelineChart').getContext('2d');
+            if (timelineChartInst) timelineChartInst.destroy();
+
+            const sorted = [...journals].sort((a,b) => new Date(a.date) - new Date(b.date));
+            timelineChartInst = new Chart(ctxTimeline, {
+                type: 'line',
+                data: {
+                    labels: sorted.map(j => formatShortDate(j.date)),
+                    datasets: [{
+                        label: 'Skala Rasa Sakit Sesudah Sesi',
+                        data: sorted.map(j => j.answers['q37'] || 0),
+                        borderColor: '#a855f7',
+                        backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        /* ---------------- IMPORT / EXPORT ---------------- */
+        function exportToJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `ruang_pulih_backup_${new Date().toISOString().split('T')[0]}.json`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+        }
+
+        function exportToExcel() {
+            const exportRows = appData.journals.map(j => {
+                const wound = appData.wounds.find(w => w.id === j.woundId);
+                return {
+                    Tanggal: j.date,
+                    Judul_Luka: wound ? wound.title : 'Refleksi',
+                    Perasaan_Awal: Array.isArray(j.answers['q5']) ? j.answers['q5'].join(', ') : j.answers['q5'],
+                    Sakit_Sebelum: j.answers['q6'] || j.answers['q36'] || 0,
+                    Sakit_Sesudah: j.answers['q37'] || 0,
+                    Status: j.answers['q42'] || 'Sedang diproses',
+                    Catatan_Pemulihan: j.answers['q34'] || ''
+                };
+            });
+
+            const worksheet = XLSX.utils.json_to_sheet(exportRows);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Jurnal Pemulihan");
+            XLSX.writeFile(workbook, `Ruang_Pulih_Jurnal_${new Date().toISOString().split('T')[0]}.xlsx`);
+        }
+
+        function importFromJSON(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const imported = JSON.parse(evt.target.result);
+                    if (imported.wounds && imported.journals) {
+                        appData = imported;
+                        saveStorageData();
+                        showToast('Berhasil mengimpor data jurnal!');
+                        renderDashboardView();
+                    } else {
+                        alert('Format file cadangan JSON tidak valid.');
+                    }
+                } catch(err) {
+                    alert('Gagal membaca file JSON.');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function confirmClearAllData() {
+            if (confirm("APAKAH KAMU YAKIN? Tindakan ini akan menghapus seluruh jurnal dan data luka secara permanen dari browser ini.")) {
+                appData = { wounds: [], journals: [], activeCheckinMoods: [] };
+                saveStorageData();
+                renderDashboardView();
+                showToast('Seluruh data berhasil dibersihkan.');
+            }
+        }
+
+        /* ---------------- UTILS ---------------- */
+        function formatIndoDate(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function formatShortDate(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('id-ID', { month: 'short', day: 'numeric' });
+        }
+    </script>
+</body>
+</html>
