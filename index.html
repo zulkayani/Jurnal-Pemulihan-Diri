@@ -116,8 +116,6 @@
         .btn:hover { background: var(--primary-hover); }
         .btn-secondary { background: #64748b; }
         .btn-secondary:hover { background: #475569; }
-        .btn-danger { background: #ef4444; }
-        .btn-danger:hover { background: #dc2626; }
         .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
         .btn-outline:hover { background: #f1f5f9; }
 
@@ -323,6 +321,7 @@
                         <input type="password" id="passwordInput" value="123456" required>
                     </div>
                     <button type="submit" class="btn">Masuk ke Jurnal</button>
+                    <button type="button" onclick="resetToDefaultLogin()" class="btn btn-outline" style="margin-top: 10px; font-size: 0.82rem;">Reset Akses / Lupa Sandi</button>
                 </form>
             </div>
         </div>
@@ -344,13 +343,12 @@
 
         <!-- Bar Sheet Navigasi -->
         <div class="sheet-bar" id="sheetBar">
-            <!-- Sheet Tabs Rendered via JS -->
             <button class="add-tab-btn" onclick="addNewSheet()">+ Sheet Luka Baru</button>
         </div>
 
         <div class="container">
             <div class="journal-intro">
-                <strong>Catatan Panduan:</strong> Jurnal ini berfokus pada <em>pemulihan diri Anda</em>. Anda tidak dipaksa untuk memaafkan, mengikhlaskan, atau mencari hikmah. Isi setiap jawaban sesuai dengan batas kesiapan dan kenyamanan Anda sendiri. Semuanya tersimpan secara otomatis secara lokal di perangkat Anda.
+                <strong>Catatan Panduan:</strong> Jurnal ini berfokus pada <em>pemulihan diri Anda</em>. Anda tidak dipaksa untuk memaafkan, mengikhlaskan, atau mencari hikmah. Isi setiap jawaban sesuai dengan batas kesiapan dan kenyamanan Anda sendiri. Semuanya tersimpan secara otomatis di browser Anda.
             </div>
 
             <table class="journal-table">
@@ -463,14 +461,16 @@
             }
         ];
 
-        // State Management
-        let appState = {
-            auth: { username: "admin", password: "123" },
+        // Initial State
+        const DEFAULT_STATE = {
+            auth: { username: "admin", password: "123456" },
             sheets: [
                 { id: "sheet_1", name: "Luka 1", data: {} }
             ],
             activeSheetId: "sheet_1"
         };
+
+        let appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
 
         // Initialize App
         document.addEventListener("DOMContentLoaded", () => {
@@ -480,7 +480,15 @@
         function loadFromLocalStorage() {
             const saved = localStorage.getItem("emotional_journal_db");
             if (saved) {
-                appState = JSON.parse(saved);
+                try {
+                    appState = JSON.parse(saved);
+                    // Ensure password consistency if old default exists
+                    if (!appState.auth || !appState.auth.password) {
+                        appState.auth = { username: "admin", password: "123456" };
+                    }
+                } catch(e) {
+                    appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+                }
             }
         }
 
@@ -489,8 +497,17 @@
             showSaveBadge();
         }
 
+        function resetToDefaultLogin() {
+            appState.auth = { username: "admin", password: "123456" };
+            saveToLocalStorage();
+            document.getElementById("usernameInput").value = "admin";
+            document.getElementById("passwordInput").value = "123456";
+            alert("Akses telah direset ke Default!\nUsername: admin\nPassword: 123456");
+        }
+
         function showSaveBadge() {
             const badge = document.getElementById("saveStatus");
+            if (!badge) return;
             badge.textContent = "Menyimpan...";
             badge.style.background = "#fef08a";
             badge.style.color = "#854d0e";
@@ -504,8 +521,8 @@
         // Login Handler
         function handleLogin(e) {
             e.preventDefault();
-            const u = document.getElementById("usernameInput").value;
-            const p = document.getElementById("passwordInput").value;
+            const u = document.getElementById("usernameInput").value.trim();
+            const p = document.getElementById("passwordInput").value.trim();
 
             if (u === appState.auth.username && p === appState.auth.password) {
                 document.getElementById("loginScreen").classList.remove("active");
@@ -513,7 +530,7 @@
                 renderSheets();
                 renderTable();
             } else {
-                alert("Username atau Password salah!");
+                alert("Username atau Password tidak cocok!\nSilakan klik tombol 'Reset Akses / Lupa Sandi' di bawah jika lupa.");
             }
         }
 
@@ -573,3 +590,104 @@
                 if (appState.activeSheetId === sheetId) {
                     appState.activeSheetId = appState.sheets[0].id;
                 }
+                saveToLocalStorage();
+                renderSheets();
+                renderTable();
+            }
+        }
+
+        // Render Table & Form
+        function renderTable() {
+            const tbody = document.getElementById("journalTableBody");
+            tbody.innerHTML = "";
+
+            const currentSheet = appState.sheets.find(s => s.id === appState.activeSheetId);
+            const sheetData = currentSheet ? currentSheet.data : {};
+
+            JOURNAL_QUESTIONS.forEach(cat => {
+                // Category Row
+                const catRow = document.createElement("tr");
+                catRow.className = `category-header ${cat.class}`;
+                catRow.innerHTML = `<td colspan="3">${cat.category}</td>`;
+                tbody.appendChild(catRow);
+
+                // Question Rows
+                cat.items.forEach(q => {
+                    const row = document.createElement("tr");
+                    const userAns = sheetData[q.id] || "";
+
+                    row.innerHTML = `
+                        <td class="aspek-title">${q.aspek}</td>
+                        <td class="panduan-text">${q.panduan}</td>
+                        <td>
+                            <textarea 
+                                class="answer-input" 
+                                placeholder="Ketik jawaban reflektif Anda di sini..."
+                                oninput="handleAnswerInput(${q.id}, this.value)"
+                            >${userAns}</textarea>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            });
+        }
+
+        function handleAnswerInput(qId, val) {
+            const currentSheet = appState.sheets.find(s => s.id === appState.activeSheetId);
+            if (currentSheet) {
+                currentSheet.data[qId] = val;
+                saveToLocalStorage();
+            }
+        }
+
+        // Password Settings Modal
+        function openPasswordModal() {
+            document.getElementById("passwordModal").classList.add("active");
+        }
+        function closePasswordModal() {
+            document.getElementById("passwordModal").classList.remove("active");
+        }
+        function saveNewPassword() {
+            const oldP = document.getElementById("oldPassInput").value;
+            const newP = document.getElementById("newPassInput").value;
+
+            if (oldP !== appState.auth.password) {
+                alert("Password lama Anda salah!");
+                return;
+            }
+            if (!newP) {
+                alert("Password baru tidak boleh kosong!");
+                return;
+            }
+
+            appState.auth.password = newP;
+            saveToLocalStorage();
+            alert("Password berhasil diperbarui!");
+            closePasswordModal();
+            document.getElementById("oldPassInput").value = "";
+            document.getElementById("newPassInput").value = "";
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            const currentSheet = appState.sheets.find(s => s.id === appState.activeSheetId);
+            let csvContent = "data:text/csv;charset=utf-8,Kategori,Aspek,Pertanyaan Panduan,Jawabanku\n";
+
+            JOURNAL_QUESTIONS.forEach(cat => {
+                cat.items.forEach(q => {
+                    const answer = (currentSheet.data[q.id] || "").replace(/"/g, '""');
+                    csvContent += `"${cat.category}","${q.aspek}","${q.panduan}","${answer}"\n`;
+                });
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `${currentSheet.name}_Pemulihan_Emosional.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
